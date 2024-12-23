@@ -1,0 +1,17 @@
+:root{
+    --background: #F4FFF2;
+    --button_green: #34FF89;
+    --table_header: #475c42;
+    --table_zebra: #E0FFDD;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 1.1em;
+    width: calc(100% - 2.2em);
+    background-color: var(--background);
+    font-family: Consolas, 'Courier New', Courier, monospace;
+}
