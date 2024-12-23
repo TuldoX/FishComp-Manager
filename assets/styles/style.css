@@ -3,6 +3,11 @@
     --button_green: #34FF89;
     --table_header: #475c42;
     --table_zebra: #E0FFDD;
+    --error_message: #FF4D4D;
+}
+
+html{
+    height: 100%;
 }
 
 body {
@@ -10,8 +15,82 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin: 1.1em;
-    width: calc(100% - 2.2em);
+    text-align: center;
+    margin: 1.2em;
+    width: calc(100% - 2.4em);
+    height: calc(100% - 2.4em);
     background-color: var(--background);
     font-family: Consolas, 'Courier New', Courier, monospace;
+    font-size: 1.4rem;
 }
+
+.container{
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    align-items: center;
+    justify-content: space-evenly;
+    margin: 0;
+}
+
+.button{
+    color: black;
+    text-decoration: none;
+    background-color: var(--button_green);
+    border: 1px solid black;
+    border-radius: 1.5em;
+    padding: 1em;
+    text-align: center;
+    font-weight: bold;
+}
+
+.role{
+    min-width: 9em;
+}
+
+.form{
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.label{
+    margin-bottom: 1em;
+    font-size: 1.8rem;
+}
+
+.input-text{
+    font-size: 2rem;
+    width: 80%;
+    text-align: center;
+    padding: 0.2em;
+    margin-bottom: 0.3em;
+    margin-top: 0.1em;
+}
+
+#message{
+    text-align: center;
+    font-size: 1.1rem;
+    background-color: var(--error_message);
+    color: white;
+    padding: 0.2em 0.9em 0.2em 0.9em;
+    border: 1px solid black;
+    border-radius: 5px;
+    display: none;
+}
+
+.button-element{
+    font-size: 1.2rem;
+    padding-left: 2em;
+    padding-right: 2em;
+    margin-top: 3em;
+}
+
+.back{
+    color: black;
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
