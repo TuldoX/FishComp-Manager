@@ -13,12 +13,11 @@ html{
 body {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
     text-align: center;
-    margin: 1.2em;
-    width: calc(100% - 2.4em);
-    height: calc(100% - 2.4em);
+    align-items: center;
+    margin: 0.5em;
+    width: calc(100% - 1em);
+    height: calc(100% - 1em);
     background-color: var(--background);
     font-family: Consolas, 'Courier New', Courier, monospace;
     font-size: 1.4rem;
@@ -27,25 +26,21 @@ body {
 .container{
     display: flex;
     flex-direction: column;
-    flex-grow: 1;
     align-items: center;
     justify-content: space-evenly;
+    flex-grow: 1;
     margin: 0;
 }
 
-.button{
+.button {
     color: black;
     text-decoration: none;
     background-color: var(--button_green);
     border: 1px solid black;
     border-radius: 1.5em;
-    padding: 1em;
-    text-align: center;
     font-weight: bold;
-}
-
-.role{
-    min-width: 9em;
+    padding: 1em 2em;
+    font-size: 1.3rem;
 }
 
 .form{
@@ -54,20 +49,19 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    text-align: center;
 }
 
 .label{
-    margin-bottom: 1em;
     font-size: 1.8rem;
 }
 
 .input-text{
     font-size: 2rem;
-    width: 80%;
+    max-width: 8em;
     text-align: center;
     padding: 0.2em;
-    margin-bottom: 0.3em;
-    margin-top: 0.1em;
+    margin: 0.4em 0 0.1em 0;
 }
 
 #message{
@@ -78,14 +72,15 @@ body {
     padding: 0.2em 0.9em 0.2em 0.9em;
     border: 1px solid black;
     border-radius: 5px;
+    max-width: 13em;
     display: none;
 }
 
-.button-element{
-    font-size: 1.2rem;
-    padding-left: 2em;
-    padding-right: 2em;
-    margin-top: 3em;
+.form-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1em;
 }
 
 .back{
@@ -94,3 +89,28 @@ body {
     margin-bottom: 1em;
 }
 
+.dashboard-table {
+    border-collapse: collapse;
+    background-color: white;
+    width: 100%;
+    margin-bottom: 1em;
+    text-align: center;
+    border-radius: 10px;
+    overflow: hidden;
+    font-size: 1.3rem;
+}
+
+th {
+    background-color: var(--table_header);
+    border: none;
+    color: white;
+    padding: 0.5em;
+}
+
+tr:nth-child(even){
+    background-color: var(--table_zebra);
+}
+
+td {
+    padding: 0.5em;
+}
