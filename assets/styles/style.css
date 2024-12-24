@@ -114,3 +114,16 @@ tr:nth-child(even){
 td {
     padding: 0.5em;
 }
+
+.name{
+    color: black;
+}
+
+.add_catch{
+    background-color: var(--button_green);
+    border: none;
+    height: 1.4em;
+    width: 100%;
+    font-size: 1.7em;
+    border-radius: 5px;
+}
