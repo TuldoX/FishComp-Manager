@@ -89,6 +89,11 @@ body {
     margin-bottom: 1em;
 }
 
+.rules-a {
+    color: black;
+    font-size: 1.7rem;
+}
+
 .dashboard-table {
     border-collapse: collapse;
     background-color: white;
