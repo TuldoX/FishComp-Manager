@@ -119,11 +119,53 @@ td {
     color: black;
 }
 
-.add_catch{
+.add-catch{
     background-color: var(--button_green);
     border: none;
     height: 1.4em;
     width: 100%;
     font-size: 1.7em;
     border-radius: 5px;
+}
+
+.back-arrow{
+    width: calc(100% - 1em);
+    display: flex;
+    padding-left: 1em;
+    align-items: flex-start;
+}
+
+.name-display{
+    background-color: white;
+    padding: 0.5em;
+    border: 1px solid black;
+    border-radius: 1.2em;
+    margin: 0 0 1.4em 0;
+}
+
+.form-bodovanie{
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    text-align: center;
+}
+
+.div-input{
+    width: 12em;
+    display: flex;
+    justify-content: space-between;
+}
+
+.input-number{
+    font-size: 1.2rem;
+    width: 65%;
+    text-align: right;
+}
+
+.input-select{
+    font-size: 1.2rem;
+    width: 65%;
+    text-align: center;
 }
