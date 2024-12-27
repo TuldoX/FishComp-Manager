@@ -169,3 +169,17 @@ td {
     width: 65%;
     text-align: center;
 }
+
+.fish-id{
+    display: none;
+}
+
+.button-delete{
+    background-color: var(--error_message);
+    border: none;
+    height: 1.2em;
+    width: 75%;
+    font-size: 1.7em;
+    border-radius: 5px;
+    color: white;
+}
