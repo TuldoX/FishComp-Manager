@@ -64,7 +64,18 @@ body {
     margin: 0.4em 0 0.1em 0;
 }
 
-#message{
+.message{
+    text-align: center;
+    font-size: 1.1rem;
+    background-color: var(--error_message);
+    color: white;
+    padding: 0.2em 0.9em 0.2em 0.9em;
+    border: 1px solid black;
+    border-radius: 5px;
+    max-width: 13em;
+}
+
+.message-hidden{
     text-align: center;
     font-size: 1.1rem;
     background-color: var(--error_message);
