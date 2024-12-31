@@ -1,26 +1,48 @@
-//funkcia na ziskanie udajov o rozhodcoch
 const getReferee = async () => {
     const response = await fetch('../../data/rozhodca-codes.json');
+
     if(response.status !== 200){
         throw new Error(`Response status: ${response.status}`);
     }
+
     const data = await response.json();
     return data;
 };
 
+//funkcia na update - ked sa royhodca prihlasi zmeni .taken na true aby sa s jeho kodom
+//nedokazal prihlasit nikto iny
+// na teraz v commente, lebo na to aby to fungovalo treba backend
+
+/*
+const refLoggedIn = async (userId, loggedIn) => {
+    const response = await fetch(`/users/${userId}`,{ //url bude ine, toto je iba dummy
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ loggedIn }),
+    });
+
+    if(response.status !== 200){
+        throw new Error(`Response status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+}
+*/
+
 document.querySelector('form').addEventListener('submit',event =>{
-    //aby sa stranka nerefreshovala po odoslani
     event.preventDefault();
     let userid = null;
     const message = document.getElementById('message');
 
     getReferee()
         .then(data => {
-            const input = document.getElementById('code').value;
             let found = false;
             let sprava = null;
-
-            //logika na prihlasenie rozhodcu
+            const input = document.getElementById('code').value;
+        
             for (let i = 0; i < data.length; i++) {
                 if (data[i].code === input) {
                     if (data[i].taken) {
@@ -35,11 +57,25 @@ document.querySelector('form').addEventListener('submit',event =>{
             }
 
             if(found && sprava === null){
-                //tu by mala byt funkcia na update json suboru ale na to potrebujem backend - zmena .taken na true
-                //ulozenie id do sessionstorage aby som mohol retrievnut data na dashboard
-                sessionStorage.setItem('userId',userid);
+                localStorage.setItem('userId',userid);
+
+                /*
+                refLoggedIn(userid,true)
+                    .then( data => {
+                        console.log(data);
+                    })
+                    .catch(err => {
+                        message.innerText = 'Chyba v požiadavke';
+                        message.classList.replace('message-hidden','message');
+                        console.log(err);
+                        found = false;
+                        localStorage.clear();
+                    });
+                */
+
                 window.location.href = 'dashboard.html';
             }
+
             else if(found && sprava !== null){
                 message.innerText = sprava;
                 message.classList.replace('message-hidden','message');
@@ -52,7 +88,6 @@ document.querySelector('form').addEventListener('submit',event =>{
             }
         })
         .catch(err =>{
-            //ak je chyba v pripojeni na server
             console.log(err);
             message.innerText = 'Chyba v požiadavke';
             message.classList.replace('message-hidden','message');
