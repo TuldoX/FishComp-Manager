@@ -1,0 +1,23 @@
+[
+    {
+        "id": "1a",
+        "refId": 2,
+        "place": 1,
+        "name": "J.Šedivý",
+        "points": 0 
+    },
+    {
+        "id": "2b",
+        "refId": 2,
+        "place": 2,
+        "name": "F.Biely",
+        "points": 0 
+    },
+    {
+        "id": "3c",
+        "refId": 2,
+        "place": 3,
+        "name": "K.Fiala",
+        "points": 0 
+    }
+]

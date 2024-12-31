@@ -9,13 +9,9 @@ const getReferee = async () => {
     return data;
 };
 
-//funkcia na update - ked sa royhodca prihlasi zmeni .taken na true aby sa s jeho kodom
-//nedokazal prihlasit nikto iny
-// na teraz v commente, lebo na to aby to fungovalo treba backend
-
-/*
+//update - ked sa rozhodca prihlasi zmeni .taken na true aby sa s jeho kodom nedokazal prihlasit nikto iny
 const refLoggedIn = async (userId, loggedIn) => {
-    const response = await fetch(`/users/${userId}`,{ //url bude ine, toto je iba dummy
+    const response = await fetch(`https:/fishcomp.sk/dummyUrl`,{ //url bude ine, toto je iba dummy
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',
@@ -30,7 +26,6 @@ const refLoggedIn = async (userId, loggedIn) => {
     const data = await response.json();
     return data;
 }
-*/
 
 document.querySelector('form').addEventListener('submit',event =>{
     event.preventDefault();
@@ -57,7 +52,7 @@ document.querySelector('form').addEventListener('submit',event =>{
             }
 
             if(found && sprava === null){
-                localStorage.setItem('userId',userid);
+                localStorage.setItem('refereeId',userid);
 
                 /*
                 refLoggedIn(userid,true)
@@ -73,7 +68,7 @@ document.querySelector('form').addEventListener('submit',event =>{
                     });
                 */
 
-                window.location.href = 'dashboard.html';
+                window.location.replace('dashboard.html');
             }
 
             else if(found && sprava !== null){
