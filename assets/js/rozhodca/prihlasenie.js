@@ -1,5 +1,5 @@
 const getReferee = async () => {
-    const response = await fetch('../../data/rozhodca-codes.json');
+    const response = await fetch('../../data/referees.json');
 
     if(response.status !== 200){
         throw new Error(`Response status: ${response.status}`);

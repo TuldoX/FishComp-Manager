@@ -22,48 +22,59 @@ window.addEventListener('load', () => {
     .then(data => {
         
         const tableBody = document.querySelector('tbody');
-        
+        const refereeId = localStorage.getItem('refereeId');
+
         data.forEach(element => {
-            const riadok = document.createElement('tr');
 
-            const id = document.createElement('td');
-            id.innerText = element.id;
-            id.classList.add('hidden');
-            riadok.appendChild(id);
+            if(element.refId !== refereeId) return;
 
-            const miesto = document.createElement('td');
-            miesto.innerText = element.place;
-            miesto.classList.add('place');
-            riadok.appendChild(miesto);
+            else{
 
-            const meno = document.createElement('td');
-            const a = document.createElement('a');
-            a.innerText = element.name;
-            a.href = '#';
-            a.classList.add('name');
-            meno.appendChild(a);
-            riadok.appendChild(meno);
+                const riadok = document.createElement('tr');
 
-            const body = document.createElement('td');
-            body.innerText = element.points;
-            body.classList.add('points');
-            riadok.appendChild(body);
+                const id = document.createElement('td');
+                id.innerText = element.id;
+                id.classList.add('hidden');
+                riadok.appendChild(id);
 
-            const button = document.createElement('td');
-            const buttonContent = document.createElement('button');
-            buttonContent.innerText = '+';
-            buttonContent.classList.add('add-catch');
-            button.appendChild(buttonContent);
-            riadok.appendChild(button);
+                const miesto = document.createElement('td');
+                miesto.innerText = element.place;
+                miesto.classList.add('place');
+                riadok.appendChild(miesto);
 
-            tableBody.appendChild(riadok);
+                const meno = document.createElement('td');
+                const a = document.createElement('a');
+                a.innerText = element.name;
+                a.href = '#';
+                a.classList.add('name');
+                meno.appendChild(a);
+                riadok.appendChild(meno);
+
+                const body = document.createElement('td');
+                body.innerText = element.points;
+                body.classList.add('points');
+                riadok.appendChild(body);
+
+                const button = document.createElement('td');
+                const buttonContent = document.createElement('button');
+                buttonContent.innerText = '+';
+                buttonContent.classList.add('add-catch');
+                button.appendChild(buttonContent);
+                riadok.appendChild(button);
+
+                tableBody.appendChild(riadok);
+            }
         });
 
         const addCatchButtons = document.querySelectorAll('.add-catch');
+
         addCatchButtons.forEach(button => {
+
             button.addEventListener('click', (event) => {
+
                 const tr = event.target.closest('tr');
                 const id = tr.querySelector('.hidden').innerText;
+
                 sessionStorage.setItem('currentCompetitor',id); 
                 window.location.href = 'pridanie_ulovku.html';
                 //po odideni z tejto stranky vymazat session storage
@@ -71,10 +82,14 @@ window.addEventListener('load', () => {
         });
 
         const competitorsHref = document.querySelectorAll('.name');
+
         competitorsHref.forEach(el => {
+
             el.addEventListener('click', (event) => {
+
                 const tr = event.target.closest('tr');
                 const id = tr.querySelector('.hidden').innerText;
+
                 sessionStorage.setItem('currentCompetitor', id);
                 window.location.href = 'ulovky.html';
                 //po odideni z tejto stranky vymazat session storage
