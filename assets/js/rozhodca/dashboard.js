@@ -1,3 +1,9 @@
+/*
+    Takisto ako getCathes() aj getCompetitors bude post request 
+    a to akych pretekarov mu zobrazi bude riesit BE
+    nateraz je vsetko na FE
+*/
+
 const getCompetitors = async () => {
     const response = await fetch('../../data/competitors.json'); 
 
@@ -22,7 +28,7 @@ window.addEventListener('load', () => {
     .then(data => {
         
         const tableBody = document.querySelector('tbody');
-        const refereeId = localStorage.getItem('refereeId');
+        const refereeId = parseInt(localStorage.getItem('refereeId'));
 
         data.forEach(element => {
 
@@ -89,8 +95,11 @@ window.addEventListener('load', () => {
 
                 const tr = event.target.closest('tr');
                 const id = tr.querySelector('.hidden').innerText;
+                const name = tr.querySelector('.name').innerText;
 
                 sessionStorage.setItem('currentCompetitor', id);
+                sessionStorage.setItem('currentCompetitorName', name);
+                
                 window.location.href = 'ulovky.html';
                 //po odideni z tejto stranky vymazat session storage
             });

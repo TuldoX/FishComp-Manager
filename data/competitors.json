@@ -8,7 +8,7 @@
     },
     {
         "id": "2b",
-        "refId": 1,
+        "refId": 2,
         "place": 2,
         "name": "F.Biely",
         "points": 0 
@@ -18,6 +18,41 @@
         "refId": 2,
         "place": 3,
         "name": "K.Fiala",
+        "points": 0 
+    },
+    {
+        "id": "4d",
+        "refId": 2,
+        "place": 4,
+        "name": "J.Smith",
+        "points": 0 
+    },
+    {
+        "id": "5e",
+        "refId": 3,
+        "place": 5,
+        "name": "A.Johnson",
+        "points": 0 
+    },
+    {
+        "id": "6d",
+        "refId": 3,
+        "place": 6,
+        "name": "E.Davis",
+        "points": 0 
+    },
+    {
+        "id": "7f",
+        "refId": 3,
+        "place": 7,
+        "name": "L.Martin",
+        "points": 0 
+    },
+    {
+        "id": "8g",
+        "refId": 3,
+        "place": 8,
+        "name": "C.Taylor",
         "points": 0 
     }
 ]

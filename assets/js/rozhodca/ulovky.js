@@ -17,20 +17,56 @@ const getCatches = async () => {
 
 window.addEventListener('load',() => {
 
+    const meno = document.querySelector('.name-display');
+    meno.innerText =  sessionStorage.getItem('currentCompetitorName');
+
     const competitorId = sessionStorage.getItem('currentCompetitor');
 
     getCatches()
     .then(data => {
 
+        const table = document.querySelector('tbody');
+
         data.forEach(element => {
-            if(element.competitorId !== competitorId) return;
-            else{
-                console.log(element);
+            
+            if(element.competitorId != competitorId) return;
+            
+            else {
+                const riadok = document.createElement('tr');
+
+                const id = document.createElement('td');
+                id.innerText = element.id;
+                id.classList.add('fish-id');
+                riadok.appendChild(id);
+
+                const species = document.createElement('td');
+                species.innerText = element.species;
+                species.classList.add('species');
+                riadok.appendChild(species);
+
+                const dlzka = document.createElement('td');
+                dlzka.innerText = element.points;
+                dlzka.classList.add('length');
+                riadok.appendChild(dlzka);
+
+                const pts = document.createElement('td');
+                pts.innerText = element.points;
+                riadok.appendChild(pts);
+
+                const buttonContainer = document.createElement('td');
+                const button = document.createElement('button');
+                button.innerText = '-';
+                button.classList.add('button-delete');
+                buttonContainer.appendChild(button);
+                riadok.appendChild(buttonContainer);
+
+                table.appendChild(riadok);
             }
         });
     })
     .catch(err => {
-
+        console.log(err);
+        window.alert(err);
     });
 
 });
