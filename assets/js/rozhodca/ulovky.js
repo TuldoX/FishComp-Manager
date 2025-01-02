@@ -63,10 +63,15 @@ window.addEventListener('load',() => {
                 table.appendChild(riadok);
             }
         });
+
+        document.querySelectorAll('button-delete').forEach( element => {
+            element.addEventListener('click', () => {
+                //deletion of row
+            });
+        });
     })
     .catch(err => {
         console.log(err);
         window.alert(err);
     });
-
 });
