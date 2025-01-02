@@ -20,6 +20,18 @@ const getCompetitors = async () => {
     opat na to potrebujem backend , lebo js nedokaze menit json subory
 */
 
+const getCatches = async () => {
+    const response = await fetch('../../data/catches.json');
+
+    if(response.status !== 200){
+        throw new Error(`Response status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+};
+
+
 window.addEventListener('load', () => {
 
     document.querySelector('h1').innerText += ' ' + localStorage.getItem('refereeId');
@@ -57,7 +69,21 @@ window.addEventListener('load', () => {
                 riadok.appendChild(meno);
 
                 const body = document.createElement('td');
-                body.innerText = element.points;
+                
+                getCatches()
+                .then(data => {
+                    let points = 0;
+                    data.forEach(el => {
+                        if(element.id !== el.competitorId) return;
+                        else points += el.points;
+                    });
+                    body.innerText = points;
+                })
+                .catch(err => {
+                    console.log(err);
+                    body.innerText = 0;
+                })
+
                 body.classList.add('points');
                 riadok.appendChild(body);
 
@@ -72,20 +98,6 @@ window.addEventListener('load', () => {
             }
         });
 
-        const addCatchButtons = document.querySelectorAll('.add-catch');
-
-        addCatchButtons.forEach(button => {
-
-            button.addEventListener('click', (event) => {
-
-                const tr = event.target.closest('tr');
-                const id = tr.querySelector('.hidden').innerText;
-
-                sessionStorage.setItem('currentCompetitor',id); 
-                window.location.href = 'pridanie_ulovku.html';
-                //po odideni z tejto stranky vymazat session storage
-            });
-        });
 
         const competitorsHref = document.querySelectorAll('.name');
 
@@ -101,6 +113,21 @@ window.addEventListener('load', () => {
                 sessionStorage.setItem('currentCompetitorName', name);
                 
                 window.location.href = 'ulovky.html';
+                //po odideni z tejto stranky vymazat session storage
+            });
+        });
+
+        const addCatchButtons = document.querySelectorAll('.add-catch');
+
+        addCatchButtons.forEach(button => {
+
+            button.addEventListener('click', (event) => {
+
+                const tr = event.target.closest('tr');
+                const id = tr.querySelector('.hidden').innerText;
+
+                sessionStorage.setItem('currentCompetitor',id); 
+                window.location.href = 'pridanie_ulovku.html';
                 //po odideni z tejto stranky vymazat session storage
             });
         });
