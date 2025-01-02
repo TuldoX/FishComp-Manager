@@ -46,5 +46,11 @@
         "species": "Karas",
         "points": 48,
         "competitorId": "1a"
+    },
+    {
+        "id": 2,
+        "species": "Karas",
+        "points": 40.2,
+        "competitorId": "7f"
     }
 ]

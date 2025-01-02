@@ -125,8 +125,10 @@ window.addEventListener('load', () => {
 
                 const tr = event.target.closest('tr');
                 const id = tr.querySelector('.hidden').innerText;
+                const meno = tr.querySelector('.name').innerText;
 
-                sessionStorage.setItem('currentCompetitor',id); 
+                sessionStorage.setItem('currentCompetitor',id);
+                sessionStorage.setItem('currentCompetitorName',meno); 
                 window.location.href = 'pridanie_ulovku.html';
                 //po odideni z tejto stranky vymazat session storage
             });
@@ -139,9 +141,16 @@ window.addEventListener('load', () => {
 });
 
 document.getElementById('koniec').addEventListener('click', () => {
-    //tu budem volat update request
-    window.alert('Chcete sa naozaj odhlásiť?');
-    localStorage.clear();
-    sessionStorage.clear();
-    window.location.replace('prihlasenie.html');
+    
+    const confirmed = confirm('Naozaj sa chcete odhlásiť? (Prebehne odoslanie údajov a vy už nebudete môcť nič upraviť.)');
+
+    if(confirmed){
+        //tu budem volat posledný update request
+        localStorage.clear();
+        sessionStorage.clear();
+        window.location.replace('prihlasenie.html');
+    }
+    else{
+        return;
+    }
 });

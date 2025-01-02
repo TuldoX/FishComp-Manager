@@ -15,6 +15,9 @@ const getCatches = async () => {
     return data;
 };
 
+/*
+    delete request s id ulovku
+*/
 window.addEventListener('load',() => {
 
     const meno = document.querySelector('.name-display');
@@ -64,9 +67,18 @@ window.addEventListener('load',() => {
             }
         });
 
-        document.querySelectorAll('button-delete').forEach( element => {
-            element.addEventListener('click', () => {
-                //deletion of row
+        document.querySelectorAll('.button-delete').forEach( element => {
+            element.addEventListener('click', (event) => {
+                const confirmed = confirm('Naozaj chcete zmazať úlovok? (Akcia je nenávratná.)');
+                if(confirmed){
+                    //delete request
+                    const riadok = event.target.closest('tr');
+                    riadok.remove();
+                }
+                else{
+                    return;
+                }
+                
             });
         });
     })
@@ -74,4 +86,9 @@ window.addEventListener('load',() => {
         console.log(err);
         window.alert(err);
     });
+});
+
+document.querySelector('.back-arrow').addEventListener('click', () => {
+    window.location.href = "dashboard.html";
+    sessionStorage.clear();
 });
