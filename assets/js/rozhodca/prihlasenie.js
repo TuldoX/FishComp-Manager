@@ -9,23 +9,10 @@ const getReferee = async () => {
     return data;
 };
 
-//update - ked sa rozhodca prihlasi zmeni .taken na true aby sa s jeho kodom nedokazal prihlasit nikto iny
-const refLoggedIn = async (userId, loggedIn) => {
-    const response = await fetch(`https:/fishcomp.sk/dummyUrl`,{ //url bude ine, toto je iba dummy
-        method: 'PATCH',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ loggedIn }),
-    });
-
-    if(response.status !== 200){
-        throw new Error(`Response status: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data;
-}
+/*
+    treba este dalsi http request na zmenu .taken na true
+    k tomu vsak treba backend (samotne js nedokaze upravovat subory)
+*/
 
 document.querySelector('form').addEventListener('submit',event =>{
     event.preventDefault();
@@ -53,21 +40,6 @@ document.querySelector('form').addEventListener('submit',event =>{
 
             if(found && sprava === null){
                 localStorage.setItem('refereeId',userid);
-
-                /*
-                refLoggedIn(userid,true)
-                    .then( data => {
-                        console.log(data);
-                    })
-                    .catch(err => {
-                        message.innerText = 'Chyba v požiadavke';
-                        message.classList.replace('message-hidden','message');
-                        console.log(err);
-                        found = false;
-                        localStorage.clear();
-                    });
-                */
-
                 window.location.replace('dashboard.html');
             }
 
