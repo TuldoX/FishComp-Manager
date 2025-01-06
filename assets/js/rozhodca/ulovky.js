@@ -15,20 +15,47 @@ const getCatches = async () => {
     return data;
 };
 
+/* 
+    tento request bude vracat iba jedno meno, opat vsak potrebujem BE
+    nateraz vracia vsetky a vyberam
+*/
+
+const getCompetitorName = async () => {
+    const response = await fetch('../../data/competitors.json');
+
+    if(response.status !== 200){
+        throw new Error(`Response status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+};
+
 /*
     delete request s id ulovku
 */
+
 window.addEventListener('load',() => {
 
     const meno = document.querySelector('.name-display');
-    meno.innerText =  sessionStorage.getItem('currentCompetitorName');
-
     const competitorId = sessionStorage.getItem('currentCompetitor');
+
+    getCompetitorName()
+    .then(data => {
+        const competitor = data.find(el => el.id === competitorId);
+        if (competitor) meno.innerText = competitor.name;
+    })
+    .catch(err => {
+        console.log(err);
+        meno.innerText = 'Error';
+    })
 
     getCatches()
     .then(data => {
 
         const table = document.querySelector('tbody');
+
+        data.sort((a,b) => b.points - a.points);
 
         data.forEach(element => {
             
@@ -51,10 +78,6 @@ window.addEventListener('load',() => {
                 dlzka.innerText = element.points;
                 dlzka.classList.add('length');
                 riadok.appendChild(dlzka);
-
-                const pts = document.createElement('td');
-                pts.innerText = element.points;
-                riadok.appendChild(pts);
 
                 const buttonContainer = document.createElement('td');
                 const button = document.createElement('button');

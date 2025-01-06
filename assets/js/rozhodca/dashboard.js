@@ -31,6 +31,10 @@ const getCatches = async () => {
     return data;
 };
 
+const formatName = (fullName) => {
+    const [firstName, lastName] = fullName.split(" ");
+    return `${firstName[0]}.${lastName}`;
+};
 
 window.addEventListener('load', () => {
 
@@ -62,7 +66,7 @@ window.addEventListener('load', () => {
 
                 const meno = document.createElement('td');
                 const a = document.createElement('a');
-                a.innerText = element.name;
+                a.innerText = formatName(element.name);
                 a.href = '#';
                 a.classList.add('name');
                 meno.appendChild(a);
@@ -73,10 +77,16 @@ window.addEventListener('load', () => {
                 getCatches()
                 .then(data => {
                     let points = 0;
-                    data.forEach(el => {
-                        if(element.id !== el.competitorId) return;
-                        else points += el.points;
-                    });
+                    data.sort((a, b) => b.points - a.points);
+                    let counter = 0;
+                
+                    for (const el of data) {
+                        if (el.competitorId === element.id) {
+                            points += el.points;
+                            counter++;
+                        }
+                        if (counter === 3) break;
+                    }
                     body.innerText = points;
                 })
                 .catch(err => {
@@ -107,13 +117,9 @@ window.addEventListener('load', () => {
 
                 const tr = event.target.closest('tr');
                 const id = tr.querySelector('.hidden').innerText;
-                const name = tr.querySelector('.name').innerText;
-
                 sessionStorage.setItem('currentCompetitor', id);
-                sessionStorage.setItem('currentCompetitorName', name);
                 
                 window.location.href = 'ulovky.html';
-                //po odideni z tejto stranky vymazat session storage
             });
         });
 
@@ -127,8 +133,7 @@ window.addEventListener('load', () => {
                 const id = tr.querySelector('.hidden').innerText;
                 const meno = tr.querySelector('.name').innerText;
 
-                sessionStorage.setItem('currentCompetitor',id);
-                sessionStorage.setItem('currentCompetitorName',meno); 
+                sessionStorage.setItem('currentCompetitor',id); 
                 window.location.href = 'pridanie_ulovku.html';
                 //po odideni z tejto stranky vymazat session storage
             });

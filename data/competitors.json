@@ -3,56 +3,56 @@
         "id": "1a",
         "refId": 2,
         "place": 1,
-        "name": "J.Šedivý",
+        "name": "Ján Šedivý",
         "points": 0 
     },
     {
         "id": "2b",
         "refId": 2,
         "place": 2,
-        "name": "F.Biely",
+        "name": "František Biely",
         "points": 0 
     },
     {
         "id": "3c",
         "refId": 2,
         "place": 3,
-        "name": "K.Fiala",
+        "name": "Karol Fiala",
         "points": 0 
     },
     {
         "id": "4d",
         "refId": 2,
         "place": 4,
-        "name": "J.Smith",
+        "name": "Joe Smith",
         "points": 0 
     },
     {
         "id": "5e",
         "refId": 3,
         "place": 5,
-        "name": "A.Johnson",
+        "name": "Andrew Johnson",
         "points": 0 
     },
     {
         "id": "6d",
         "refId": 3,
         "place": 6,
-        "name": "E.Davis",
+        "name": "Elwis Davis",
         "points": 0 
     },
     {
         "id": "7f",
         "refId": 3,
         "place": 7,
-        "name": "L.Martin",
+        "name": "Lucas Martin",
         "points": 0 
     },
     {
         "id": "8g",
         "refId": 3,
         "place": 8,
-        "name": "C.Taylor",
+        "name": "Christian Taylor",
         "points": 0 
     }
 ]

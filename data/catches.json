@@ -48,9 +48,15 @@
         "competitorId": "1a"
     },
     {
-        "id": 2,
+        "id": 9,
         "species": "Karas",
         "points": 40.2,
         "competitorId": "7f"
+    },
+    {
+        "id": 10,
+        "species": "Úhor",
+        "points": 123,
+        "competitorId": "1a"
     }
 ]
