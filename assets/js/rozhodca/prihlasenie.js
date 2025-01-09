@@ -40,6 +40,7 @@ document.querySelector('form').addEventListener('submit',event =>{
 
             if(found && sprava === null){
                 localStorage.setItem('refereeId',userid);
+                window.history.replaceState(null, null, 'dashboard.html');
                 window.location.replace('dashboard.html');
             }
 
