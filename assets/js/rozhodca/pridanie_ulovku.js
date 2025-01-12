@@ -69,8 +69,7 @@ document.querySelector('.button').addEventListener('click',(event) => {
 
     if(cm !== "" && druh !== ""){
         //tu bude put request na update a pridanie úlovku
-        sessionStorage.clear();
-        window.location.href = 'dashboard.html';
+        window.location.href = 'ulovky.html';
     }
     else{
         alert('Vyberte možnosť a zadajte dĺžku!');
