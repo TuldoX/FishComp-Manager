@@ -1,0 +1,30 @@
+services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ./frontend:/var/www/frontend
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php
+
+  php:
+    build: .
+    container_name: php
+    volumes:
+      - ./backend:/var/www/backend
+
+  db:
+    image: postgres:latest   # Change to mysql:latest if using MySQL
+    container_name: database
+    restart: always
+    environment:
+      POSTGRES_DB: mydb
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"  # PostgreSQL default port
