@@ -1,4 +1,10 @@
 FROM nginx:latest
+
+#copy everything in the frontend folder to this folder
 COPY . /usr/share/nginx/html
-COPY nginx/default.conf etc/nginx/conf.d/default.conf
+
+#copy configuration to configuration inside container
+COPY nginx/default.conf /etc/nginx/conf.d/default.conf
+
+#expose port
 EXPOSE 80
