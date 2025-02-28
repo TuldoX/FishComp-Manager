@@ -3,10 +3,19 @@ services:
     build: ./frontend
     container_name: frontend
     ports:
-      - "8080:80"
+      - "80:80"
     networks:
     - fishcomp-manager
 
+  backend:
+    build: ./backend
+    container_name: backend
+    ports:
+    - 81:81
+    volumes:
+      - ./backend:/var/www 
+    networks:
+      - fishcomp-manager
 
 networks:
   fishcomp-manager:
