@@ -5,15 +5,16 @@ services:
     ports:
       - "80:80"
     networks:
-    - fishcomp-manager
+      - fishcomp-manager
 
   backend:
     build: ./backend
     container_name: backend
-    ports:
-    - 81:81
     volumes:
-      - ./backend:/var/www 
+      - ./backend:/var/www
+    ports:
+      - 9000:9000
+    working_dir: /var/www
     networks:
       - fishcomp-manager
 

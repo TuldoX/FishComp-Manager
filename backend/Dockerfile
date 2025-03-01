@@ -16,7 +16,7 @@ RUN docker-php-ext-install pdo_pgsql pgsql
 #copy compose
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-#install dependencies
-RUN composer install
+EXPOSE 9000
 
-EXPOSE 81
+# Start PHP-FPM
+CMD ["php-fpm"]
