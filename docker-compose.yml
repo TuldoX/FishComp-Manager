@@ -6,6 +6,8 @@ services:
       - "80:80"
     networks:
       - fishcomp-manager
+    depends_on:
+      - backend
 
   backend:
     build: ./backend
