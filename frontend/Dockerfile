@@ -4,7 +4,7 @@ FROM nginx:latest
 COPY . /usr/share/nginx/html
 
 #copy configuration to configuration inside container
-COPY nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 #expose port
 EXPOSE 80

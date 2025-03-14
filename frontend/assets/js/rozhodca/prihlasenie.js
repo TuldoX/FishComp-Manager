@@ -4,8 +4,7 @@ const getReferee = async () => {
     if(response.status !== 200){
         throw new Error(`Response status: ${response.status}`);
     }
-
-    const data = await response.json();
+    let data = await response.json();
     return data;
 };
 

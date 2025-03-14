@@ -1,24 +1,26 @@
 services:
-  frontend:
-    build: ./frontend
-    container_name: frontend
-    ports:
-      - "80:80"
-    networks:
-      - fishcomp-manager
-    depends_on:
-      - backend
-
   backend:
     build: ./backend
     container_name: backend
     volumes:
       - ./backend:/var/www
     ports:
-      - 9000:9000
+      - "9000:9000"
     working_dir: /var/www
     networks:
       - fishcomp-manager
+
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    ports:
+      - "80:80"
+    volumes:
+      - ./frontend:/usr/share/nginx/html  # Match Nginx config
+    networks:
+      - fishcomp-manager
+    depends_on:
+      - backend
 
 networks:
   fishcomp-manager:
