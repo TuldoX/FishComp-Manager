@@ -1,8 +1,7 @@
-/*
-    Takisto ako getCathes() aj getCompetitors bude post request 
-    a to akych pretekarov mu zobrazi bude riesit BE
-    nateraz je vsetko na FE
-*/
+// window.history.pushState(null, "", window.location.href);
+// window.addEventListener("popstate", function () {
+//     window.history.pushState(null, "", window.location.href);
+// });
 
 const getCompetitors = async () => {
     const response = await fetch('../../data/competitors.json'); 

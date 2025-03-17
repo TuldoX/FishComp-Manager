@@ -27,7 +27,7 @@ const login = async (code) => {
         if (response.status >= 200 && response.status < 300) {
             responseObject = new Response(response.status, "OK", data);
         } else if (response.status === 404) {
-            responseObject = new Response(response.status, "Zadaný kód je neplatný.");
+            responseObject = new Response(response.status, "Neplatný kód.");
         } else {
             responseObject = new Response(response.status, "Chyba v požiadavke.");
         }
@@ -38,20 +38,32 @@ const login = async (code) => {
         return new Response(500, "Chyba na serveri.");
     }
 };
+
+const submitButton = document.querySelector(".button-element");
+
 document.querySelector(".form").addEventListener("submit", async (event) => {
     event.preventDefault();
 
     const input = document.getElementById("code").value;
     const message = document.getElementById("message");
+    const isValidCode = (code) => /^[a-zA-Z0-9]+$/.test(code);
 
-    const result = await login(input);
-
-    if (result.status === 200) {
-        let referee = new Referee(result.data.id, result.data.code);
-        localStorage.setItem("referee", JSON.stringify(referee));
-        window.location.replace("dashboard.html");
-    } else {
-        message.innerText = result.message;
+    if (!isValidCode(input)) {
+        message.innerText = "Neplatný kód.";
         message.classList.replace("message-hidden", "message");
+    }
+    else{
+        submitButton.disabled = true;
+        const result = await login(input);
+
+        if (result.status === 200) {
+            let referee = new Referee(result.data.id, result.data.code);
+            localStorage.setItem("referee", JSON.stringify(referee));
+            window.location.replace("dashboard.html");
+            window.history.pushState(null, "", "dashboard.html");
+        } else {
+            message.textContent = result.message;
+            message.classList.replace("message-hidden", "message");
+        }
     }
 });
