@@ -1,48 +1,22 @@
 const referee = JSON.parse(localStorage.getItem("referee"));
 
-if (!referee) {
+if (!referee){
     window.location.replace("prihlasenie.html");
 }
-
-const getCompetitors = async () => {
-    const response = await fetch('../../data/competitors.json'); 
-
+const getCompetitors = async (refereeId) => {
+    const response = await fetch(`referees/${refereeId}/competitors`);
+    const data = await response.json();
     if(response.status !== 200){
         throw new Error(`Response status: ${response.status}`);
     }
-    const data = await response.json();
-    return data;
 };
 
-/*
-    tu bude http request, ktory pri odhlaseni posle pre istotu update vsetkcyh dat
-    konkretneho rozhodcu
-    opat na to potrebujem backend , lebo js nedokaze menit json subory
-*/
-
-const getCatches = async () => {
-    const response = await fetch('../../data/catches.json');
-
-    if(response.status !== 200){
-        throw new Error(`Response status: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data;
-};
-
-const formatName = (fullName) => {
-    const [firstName, lastName] = fullName.split(" ");
-    return `${firstName[0]}.${lastName}`;
-};
+//vytiahnut referee id z localstorage
 
 window.addEventListener('load', () => {
-
-    document.querySelector('h1').innerText += ' ' + localStorage.getItem('refereeId');
-
     getCompetitors()
     .then(data => {
-        
+
         const tableBody = document.querySelector('tbody');
         const refereeId = parseInt(localStorage.getItem('refereeId'));
 
