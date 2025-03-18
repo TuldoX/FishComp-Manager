@@ -10,8 +10,13 @@
     <h2>FishComp Manager</h2>
     <h1>Kto ste?</h1>
     <div class="container">
-        <a class="button uvodbtn" href="pages/rozhodca/prihlasenie.html">Rozhodca</a>
+        <a id="rozhodca" class="button uvodbtn">Rozhodca</a>
         <a class="button uvodbtn" href="#">Organizátor</a>
     </div>
 </body>
+<script>
+    document.getElementById("rozhodca").onclick = () => {
+        window.location.replace("../pages/rozhodca/prihlasenie.html");
+    }
+</script>
 </html>

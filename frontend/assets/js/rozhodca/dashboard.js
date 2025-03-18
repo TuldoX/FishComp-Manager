@@ -1,7 +1,8 @@
-// window.history.pushState(null, "", window.location.href);
-// window.addEventListener("popstate", function () {
-//     window.history.pushState(null, "", window.location.href);
-// });
+const referee = JSON.parse(localStorage.getItem("referee"));
+
+if (!referee) {
+    window.location.replace("prihlasenie.html");
+}
 
 const getCompetitors = async () => {
     const response = await fetch('../../data/competitors.json'); 

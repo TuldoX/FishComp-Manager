@@ -52,7 +52,7 @@ document.querySelector(".form").addEventListener("submit", async (event) => {
         message.innerText = "Neplatný kód.";
         message.classList.replace("message-hidden", "message");
     }
-    else{
+    else {
         submitButton.disabled = true;
         const result = await login(input);
 
@@ -60,10 +60,13 @@ document.querySelector(".form").addEventListener("submit", async (event) => {
             let referee = new Referee(result.data.id, result.data.code);
             localStorage.setItem("referee", JSON.stringify(referee));
             window.location.replace("dashboard.html");
-            window.history.pushState(null, "", "dashboard.html");
         } else {
             message.textContent = result.message;
             message.classList.replace("message-hidden", "message");
         }
     }
 });
+
+document.querySelector('.back').onclick = () => {
+    window.location.replace('../../index.html');
+};
