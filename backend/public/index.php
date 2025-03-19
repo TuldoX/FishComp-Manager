@@ -1,30 +1,22 @@
 <?php
+header("Content-Type: application/json");
 
-$code = null;
+// Sample competitors data
+$competitors = [
+    ["id" => "1a", "refId" => 2, "place" => 1, "name" => "Ján Šedivý", "points" => 0],
+    ["id" => "2b", "refId" => 2, "place" => 2, "name" => "František Biely", "points" => 0],
+    ["id" => "3c", "refId" => 2, "place" => 3, "name" => "Karol Fiala", "points" => 0],
+    ["id" => "4d", "refId" => 2, "place" => 4, "name" => "Joe Smith", "points" => 0],
+    ["id" => "5e", "refId" => 2, "place" => 5, "name" => "Andrew Johnson", "points" => 0],
+    ["id" => "6d", "refId" => 2, "place" => 6, "name" => "Elwis Davis", "points" => 0],
+    ["id" => "7f", "refId" => 2, "place" => 7, "name" => "Lucas Martin", "points" => 0],
+    ["id" => "8g", "refId" => 2, "place" => 8, "name" => "Christian Taylor", "points" => 0]
+];
 
-// Accessing POST data (for form or JSON)
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if ($_SERVER['CONTENT_TYPE'] === 'application/json') {
-        // Reading raw JSON from the request body
-        $json = file_get_contents('php://input');
-        $data = json_decode($json, true);
-        $code = $data['code'] ?? null;
-    } else {
-        // Form data sent via POST
-        $code = $_POST['code'] ?? null;
-    }
-}
+// Get the request URI and split it into parts
+$requestUri = $_SERVER['REQUEST_URI'];
+$segments = explode('/', trim($requestUri, '/'));
 
-if ($code === "123ab") {
-    $response = [
-        'id' => '1',
-        'code' => '123ab'
-    ];
-    echo json_encode($response);
-}
+// Check if the URL follows the expected pattern: referees/{referee_id}/competitors
 
-else {
-    $response = [];
-    http_response_code(404);
-    echo json_encode($response);
-}
+    echo json_encode(array_values($competitors));

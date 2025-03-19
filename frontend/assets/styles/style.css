@@ -163,6 +163,7 @@ th {
 
 .name{
     color: black;
+    text-decoration: underline;
 }
 
 .add-catch{
