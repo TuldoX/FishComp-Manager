@@ -7,14 +7,8 @@ class Competitor{
     }
 }
 
-const referee = JSON.parse(localStorage.getItem("referee"));
-
-if (!referee){
-    window.location.replace("prihlasenie.html");
-}
-
 const getCompetitors = async (refereeId) => {
-    const response = await fetch(`referees/${refereeId}/competitors`);
+    const response = await fetch(`/referees/${refereeId}/competitors`);
     const data = await response.json();
 
     if(response.status !== 200){
@@ -82,18 +76,26 @@ function Render(competitor) {
     });
 }
 
+const referee = JSON.parse(localStorage.getItem("referee"));
+
+if (!referee) {
+    window.location.replace("prihlasenie.html");
+}
+
+console.log("Referee retrieved from localStorage:", referee); // Debugging
 window.addEventListener('load', () => {
     getCompetitors(referee.id)
         .then(data => {
             const competitors = [];
 
-            data.forEach(element => {
+            data.data.forEach(element => {
                 const competitor = new Competitor(element.id, element.name, element.place, element.points);
                 competitors.unshift(competitor);
                 Render(competitor);
             });
 
             localStorage.setItem("competitors", JSON.stringify(competitors));
+            console.log("Competitors stored in localStorage:", competitors); // Debugging
         })
         .catch(err => {
             console.log(err);

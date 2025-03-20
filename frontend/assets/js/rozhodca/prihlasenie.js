@@ -1,9 +1,10 @@
-class Referee{
-    constructor(id,code){
+class Referee {
+    constructor(id, code) {
         this.id = id;
         this.code = code;
     }
 }
+
 class Response {
     constructor(status, message = "", data = null) {
         this.status = status;
@@ -11,9 +12,10 @@ class Response {
         this.data = data;
     }
 }
+
 const login = async (code) => {
     try {
-        const response = await fetch("auth/referee", {
+        const response = await fetch("/auth/referee", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -21,11 +23,13 @@ const login = async (code) => {
             body: JSON.stringify({ code }),
         });
 
-        const data = await response.json();
+        const responseData = await response.json(); // Renamed to avoid confusion
+        console.log("API Response:", responseData); // Debugging
+
         let responseObject;
 
         if (response.status >= 200 && response.status < 300) {
-            responseObject = new Response(response.status, "OK", data);
+            responseObject = new Response(response.status, "OK", responseData.data); // Access nested `data`
         } else if (response.status === 404) {
             responseObject = new Response(response.status, "Neplatný kód.");
         } else {
@@ -51,18 +55,19 @@ document.querySelector(".form").addEventListener("submit", async (event) => {
     if (!isValidCode(input)) {
         message.innerText = "Neplatný kód.";
         message.classList.replace("message-hidden", "message");
-    }
-    else {
+    } else {
         submitButton.disabled = true;
         const result = await login(input);
 
         if (result.status === 200) {
-            let referee = new Referee(result.data.id, result.data.code);
+            let referee = new Referee(result.data.id, result.data.code); // Access `result.data` directly
             localStorage.setItem("referee", JSON.stringify(referee));
+            console.log("Referee stored in localStorage:", referee); // Debugging
             window.location.replace("dashboard.html");
         } else {
             message.textContent = result.message;
             message.classList.replace("message-hidden", "message");
+            submitButton.disabled = false; // Re-enable the button on error
         }
     }
 });

@@ -1,117 +1,87 @@
-/*
-    getCatches() bude post request
-    posielat sa bude id pretekara, response od BE budu ulovky s danym id
-    nateraz posielam vsetko a js to filtruje
-*/
+class Catch {
+    constructor(id, species, points, competitorId) {
+        this.id = id;
+        this.species = species;
+        this.points = points;
+        this.competitorId = competitorId;
+    }
+}
 
-const getCatches = async () => {
-    const response = await fetch('../../data/catches.json');
-
-    if(response.status !== 200){
+const getCatches = async (competitorId) => {
+    const response = await fetch(`/competitors/${competitorId}/catches`);
+    if (response.status !== 200) {
         throw new Error(`Response status: ${response.status}`);
     }
-
-    const data = await response.json();
-    return data;
+    return await response.json();
 };
 
-/* 
-    tento request bude vracat iba jedno meno, opat vsak potrebujem BE
-    nateraz vracia vsetky a vyberam
-*/
-
-const getCompetitorName = async () => {
-    const response = await fetch('../../data/competitors.json');
-
-    if(response.status !== 200){
+const deleteCatch = async (catchId) => {
+    const response = await fetch(`/catches/${catchId}`, { method: "DELETE" });
+    if (response.status !== 200) {
         throw new Error(`Response status: ${response.status}`);
     }
-
-    const data = await response.json();
-    return data;
+    return await response.json();
 };
 
-/*
-    delete request s id ulovku
-*/
+function Render(species, points, id) {
+    const row = document.createElement('tr');
+    const table = document.querySelector('tbody');
 
-window.addEventListener('load',() => {
+    const speciesCell = document.createElement('td');
+    speciesCell.innerText = species;
+    speciesCell.classList.add('species');
+    row.appendChild(speciesCell);
 
-    const meno = document.querySelector('.name-display');
-    const competitorId = sessionStorage.getItem('currentCompetitor');
+    const pointsCell = document.createElement('td');
+    pointsCell.innerText = points;
+    pointsCell.classList.add('length');
+    row.appendChild(pointsCell);
 
-    getCompetitorName()
-    .then(data => {
-        const competitor = data.find(el => el.id === competitorId);
-        if (competitor) meno.innerText = competitor.name;
-    })
-    .catch(err => {
-        console.log(err);
-        meno.innerText = 'Error';
-    })
+    const buttonContainer = document.createElement('td');
+    const button = document.createElement('button');
+    button.innerText = '-';
+    button.classList.add('button-delete');
 
-    getCatches()
-    .then(data => {
-
-        const table = document.querySelector('tbody');
-
-        data.sort((a,b) => b.points - a.points);
-
-        data.forEach(element => {
-            
-            if(element.competitorId != competitorId) return;
-            
-            else {
-                const riadok = document.createElement('tr');
-
-                const id = document.createElement('td');
-                id.innerText = element.id;
-                id.classList.add('fish-id');
-                riadok.appendChild(id);
-
-                const species = document.createElement('td');
-                species.innerText = element.species;
-                species.classList.add('species');
-                riadok.appendChild(species);
-
-                const dlzka = document.createElement('td');
-                dlzka.innerText = element.points;
-                dlzka.classList.add('length');
-                riadok.appendChild(dlzka);
-
-                const buttonContainer = document.createElement('td');
-                const button = document.createElement('button');
-                button.innerText = '-';
-                button.classList.add('button-delete');
-                buttonContainer.appendChild(button);
-                riadok.appendChild(buttonContainer);
-
-                table.appendChild(riadok);
+    button.addEventListener("click", async (event) => {
+        const confirmed = confirm('Naozaj chcete zmazať úlovok? (Akcia je nenávratná.)');
+        if (confirmed) {
+            try {
+                await deleteCatch(id);
+                const row = event.target.closest('tr');
+                row.remove();
+            } catch (error) {
+                window.alert('Nastala chyba.');
             }
-        });
-
-        document.querySelectorAll('.button-delete').forEach( element => {
-            element.addEventListener('click', (event) => {
-                const confirmed = confirm('Naozaj chcete zmazať úlovok? (Akcia je nenávratná.)');
-                if(confirmed){
-                    //delete request
-                    const riadok = event.target.closest('tr');
-                    riadok.remove();
-                }
-                else{
-                    return;
-                }
-                
-            });
-        });
-    })
-    .catch(err => {
-        console.log(err);
-        window.alert(err);
+        }
     });
+
+    buttonContainer.appendChild(button);
+    row.appendChild(buttonContainer);
+    table.appendChild(row);
+}
+
+window.addEventListener('load', () => {
+    const nameDisplay = document.querySelector('.name-display');
+    const competitor = JSON.parse(sessionStorage.getItem("selectedCompetitor"));
+    nameDisplay.innerText = competitor.name;
+
+    getCatches(competitor.id)
+        .then(data => {
+            data.data.sort((a, b) => b.points - a.points);
+            const catches = data.data.map(element => new Catch(element.id, element.species, element.points, element.competitorId));
+            sessionStorage.setItem("catches", JSON.stringify(catches));
+
+            data.data.forEach(element => {
+                Render(element.species, element.points, element.id);
+            });
+        })
+        .catch(error => {
+            console.error(error);
+            window.alert("Nastala chyba.");
+        });
 });
 
 document.querySelector('.back-arrow').addEventListener('click', () => {
-    window.location.href = "dashboard.html";
+    window.location.replace("dashboard.html");
     sessionStorage.clear();
 });
