@@ -1,77 +1,105 @@
-const getSpecies = async () => {
-    const response = await fetch('../../data/species.json');
+class Catch{
+    constructor(name,points,competitorId){
+        this.species = name;
+        this.points = points;
+        this.competitorId = competitorId;
+    }
+}
+
+const getSpeciesList = async () => {
+    const response = await fetch('/species');
+    const data = await response.json();
 
     if(response.status !== 200){
         throw new Error(`Response status: ${response.status}`);
     }
 
-    const data = await response.json();
     return data;
-};
+}
 
-//opat bude posielat competitor ID potom vrati meno, toto je len docasne
-const getCompetitorName = async () => {
-    const response = await fetch('../../data/competitors.json');
+const postCatch = async (ulovok) => {
+    const response = await fetch('/catches',{
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            "competitorId": ulovok.competitorId,
+            "druh": ulovok.species,
+            "points": ulovok.points
+        })
+    });
 
+    const odpoved = await response.json();
     if(response.status !== 200){
         throw new Error(`Response status: ${response.status}`);
     }
 
-    const data = await response.json();
-    return data;
-};
+    return odpoved;
+}
+
+const competitor = JSON.parse(sessionStorage.getItem('selectedCompetitor'));
 
 window.addEventListener('load', () => {
     const name = document.querySelector('.name-display');
-    const competitorId = sessionStorage.getItem('currentCompetitor');
+    name.innerText = competitor.name;
 
-    getCompetitorName()
-    .then(data => {
-        const competitor = data.find(el => el.id === competitorId);
-        if (competitor) name.innerText = competitor.name;
-    })
-    .catch(err => {
-        console.log(err);
-        name.innerText = 'Error';
-    });
-
-    getSpecies()
+    getSpeciesList()
     .then(data => {
         const select = document.querySelector('.input-select');
-        data.forEach(element => {
+        data.data.forEach(element => {
             const option = document.createElement('option');
             option.innerText = element.name;
             option.value = element.name;
             select.appendChild(option);
         });
     })
-    .catch(err => {
-        console.log(err);
+    .catch(() => {
+        window.alert("Nastala chyba.");
     });
 });
 
 document.querySelector('.back-arrow').addEventListener('click', () => {
-    const Confirm = confirm('Naozaj chcete opustiť stránku? Zadané údaje sa zahodia.');
-    if(Confirm){
-        window.location.href = "dashboard.html";
-        sessionStorage.clear();
-    }
-    else{
-        return;
-    }
-});
-
-document.querySelector('.button').addEventListener('click',(event) => {
-    event.preventDefault();
-
     const druh = document.querySelector('.input-select').value;
     const cm = document.querySelector('.input-number').value;
 
-    if(cm !== "" && druh !== ""){
-        //tu bude put request na update a pridanie úlovku
-        window.location.href = 'ulovky.html';
+    if (druh !== "" || cm !== ""){
+        const Confirm = confirm('Naozaj chcete opustiť stránku? Zadané údaje sa zahodia.');
+        if(Confirm){
+            window.location.replace("dashboard.html");
+            sessionStorage.clear();
+        }
     }
-    else{
-        alert('Vyberte možnosť a zadajte dĺžku!');
+    else {
+        window.location.replace("dashboard.html");
+        sessionStorage.clear();
+    }
+});
+
+document.querySelector('.button').addEventListener('click', (event) => {
+    event.preventDefault();
+
+    const druh = document.querySelector('.input-select').value;
+    const cm = Number(document.querySelector('.input-number').value);
+
+    if (isNaN(cm) || cm <= 0) {
+        alert('Zadajte platnú dĺžku!');
+        return;
+    }
+
+    const ulovok = new Catch(druh, cm, competitor.id);
+    console.log(ulovok);
+
+    if (druh !== "") {
+        postCatch(ulovok)
+            .then(response => {
+                console.log(response);
+                window.location.replace('ulovky.html');
+            })
+            .catch(() => {
+                window.alert('Nastala chyba. Skúste pridať úlovok znovu.');
+            });
+    } else {
+        alert('Vyberte možnosť!');
     }
 });

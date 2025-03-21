@@ -58,7 +58,7 @@ function Render(competitor) {
     tableBody.appendChild(riadok);
 
     a.addEventListener('click', (event) => {
-        event.preventDefault(); // Prevent default link behavior
+        event.preventDefault();
         const formattedName = event.target.innerText;
         const competitors = JSON.parse(localStorage.getItem("competitors")) || [];
         const selectedCompetitor = competitors.find(comp => FormatName(comp.name) === formattedName);
@@ -68,7 +68,7 @@ function Render(competitor) {
 
     buttonContent.addEventListener('click', (event) => {
         event.preventDefault();
-        const formattedName = FormatName(competitor.name); // Use the competitor's name directly
+        const formattedName = FormatName(competitor.name);
         const competitors = JSON.parse(localStorage.getItem("competitors")) || [];
         const selectedCompetitor = competitors.find(comp => FormatName(comp.name) === formattedName);
         sessionStorage.setItem("selectedCompetitor", JSON.stringify(selectedCompetitor));
@@ -82,7 +82,7 @@ if (!referee) {
     window.location.replace("prihlasenie.html");
 }
 
-console.log("Referee retrieved from localStorage:", referee); // Debugging
+// console.log("Referee retrieved from localStorage:", referee); // Debugging
 window.addEventListener('load', () => {
     getCompetitors(referee.id)
         .then(data => {
@@ -95,7 +95,7 @@ window.addEventListener('load', () => {
             });
 
             localStorage.setItem("competitors", JSON.stringify(competitors));
-            console.log("Competitors stored in localStorage:", competitors); // Debugging
+            //console.log("Competitors stored in localStorage:", competitors); // Debugging
         })
         .catch(err => {
             console.log(err);

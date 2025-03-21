@@ -20,16 +20,16 @@ const login = async (code) => {
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ code }),
+            body: JSON.stringify({ code })
         });
 
-        const responseData = await response.json(); // Renamed to avoid confusion
-        console.log("API Response:", responseData); // Debugging
+        const responseData = await response.json();
+        // console.log("API Response:", responseData); // Debugging
 
         let responseObject;
 
         if (response.status >= 200 && response.status < 300) {
-            responseObject = new Response(response.status, "OK", responseData.data); // Access nested `data`
+            responseObject = new Response(response.status, "OK", responseData.data);
         } else if (response.status === 404) {
             responseObject = new Response(response.status, "Neplatný kód.");
         } else {
@@ -60,14 +60,14 @@ document.querySelector(".form").addEventListener("submit", async (event) => {
         const result = await login(input);
 
         if (result.status === 200) {
-            let referee = new Referee(result.data.id, result.data.code); // Access `result.data` directly
+            let referee = new Referee(result.data.id, result.data.code);
             localStorage.setItem("referee", JSON.stringify(referee));
-            console.log("Referee stored in localStorage:", referee); // Debugging
+            // console.log("Referee stored in localStorage:", referee); // Debugging
             window.location.replace("dashboard.html");
         } else {
             message.textContent = result.message;
             message.classList.replace("message-hidden", "message");
-            submitButton.disabled = false; // Re-enable the button on error
+            submitButton.disabled = false;
         }
     }
 });
