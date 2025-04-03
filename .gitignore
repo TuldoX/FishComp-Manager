@@ -1,2 +1,4 @@
 /backend/vendor
 .idea
+.env
+/data

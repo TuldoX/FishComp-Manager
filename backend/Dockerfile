@@ -8,7 +8,7 @@ COPY . /var/www/
 #update and install necessary libs
 RUN apt-get update
 RUN apt-get install -y libpq-dev
-
+RUN apt-get install -y unzip
 #install postgre extension
 RUN docker-php-ext-install pdo
 RUN docker-php-ext-install pdo_pgsql pgsql

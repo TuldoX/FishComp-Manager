@@ -1,22 +1,56 @@
 services:
+  database:
+    container_name: db
+    image: postgres:17
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data/postgresql:/var/lib/postgresql/data
+    networks:
+      - fishcomp-manager
+
+  pgadmin:
+    container_name: pg_admin
+    image: dpage/pgadmin4:latest
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "8088:80"
+    volumes:
+      - ./data/pgadmin:/var/lib/pgadmin
+    networks:
+      - fishcomp-manager
+    depends_on:
+      - database
+
   backend:
     build: ./backend
     container_name: backend
+    restart: unless-stopped
     volumes:
       - ./backend:/var/www
     ports:
       - "9000:9000"
+    env_file:
+          .env
     working_dir: /var/www
+    depends_on:
+      - database
     networks:
       - fishcomp-manager
 
   frontend:
     build: ./frontend
     container_name: frontend
+    restart: unless-stopped
     ports:
       - "80:80"
     volumes:
-      - ./frontend:/usr/share/nginx/html  # Match Nginx config
+      - ./frontend:/usr/share/nginx/html
     networks:
       - fishcomp-manager
     depends_on:

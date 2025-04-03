@@ -1,15 +1,17 @@
 {
-    "name": "fishcomp-manager/1.0",
-    "description": "Web app for managing fishing compertitions.",
-    "type": "project",
-    "require": {
-      "php": "^8.2",
-      "ext-pdo_pgsql": "*",       
-      "ext-pgsql": "*"
-    },
-    "autoload": {
-      "psr-4": {
-        "App\\": "src/"
-      }
+  "name": "fishcomp-manager/1.0",
+  "description": "Web app for managing fishing compertitions.",
+  "type": "project",
+  "require": {
+    "php": "^8.2",
+    "ext-pdo_pgsql": "*",
+    "ext-pgsql": "*",
+    "ramsey/uuid": "^4.7",
+    "firebase/php-jwt": "^6.11"
+  },
+  "autoload": {
+    "psr-4": {
+      "App\\": "src/"
     }
   }
+}
