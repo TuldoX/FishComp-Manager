@@ -36,7 +36,7 @@ services:
     ports:
       - "9000:9000"
     env_file:
-          .env
+      - .env
     working_dir: /var/www
     depends_on:
       - database

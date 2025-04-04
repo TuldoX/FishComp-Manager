@@ -41,6 +41,7 @@ body {
     font-weight: bold;
     padding: 1em 0.8em;
     font-size: 1.3rem;
+    cursor: pointer;
 }
 
 .uvodbtn{
@@ -103,6 +104,7 @@ body {
     margin-top: 1em;
     margin-bottom: 1em;
     text-decoration: underline;
+    cursor:pointer;
 }
 
 .rules-a {

@@ -2,20 +2,21 @@ FROM php:8.3-fpm
 
 WORKDIR /var/www
 
-#copy all BE files to working directory
-COPY . /var/www/
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    libpq-dev \
+    unzip \
+    git \
+    zip \
+    && docker-php-ext-install pdo pdo_pgsql pgsql
 
-#update and install necessary libs
-RUN apt-get update
-RUN apt-get install -y libpq-dev
-RUN apt-get install -y unzip
-#install postgre extension
-RUN docker-php-ext-install pdo
-RUN docker-php-ext-install pdo_pgsql pgsql
-
-#copy compose
+# Copy composer from official image
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+# Copy application files
+COPY . .
+
+# Expose port
 EXPOSE 9000
 
 # Start PHP-FPM
