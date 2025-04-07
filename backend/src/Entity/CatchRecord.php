@@ -7,18 +7,8 @@ use Ramsey\Uuid\Uuid;
 class CatchRecord{
     private Uuid $id;
     private string $species;
-    private string $points;
-    private UUid $competitorId;
-
-    public function getId(): Uuid
-    {
-        return $this->id;
-    }
-
-    public function setId(Uuid $id): void
-    {
-        $this->id = $id;
-    }
+    private float $points;
+    private Uuid $competitorId;
 
     public function getSpecies(): string
     {
@@ -30,12 +20,22 @@ class CatchRecord{
         $this->species = $species;
     }
 
-    public function getPoints(): string
+    public function getId(): Uuid
+    {
+        return $this->id;
+    }
+
+    public function setId(Uuid $id): void
+    {
+        $this->id = $id;
+    }
+
+    public function getPoints(): float
     {
         return $this->points;
     }
 
-    public function setPoints(string $points): void
+    public function setPoints(float $points): void
     {
         $this->points = $points;
     }
