@@ -2,6 +2,8 @@
 
 namespace App\Router;
 
+use InvalidArgumentException;
+
 class Router
 {
     private array $routes = [];
@@ -69,7 +71,7 @@ class Router
             } elseif ($matches[2] === 'uuid') {
                 return '(?P<' . $matches[1] . '>[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})';
             }
-            throw new \InvalidArgumentException('Only int and uuid parameter types are supported.');
+            throw new InvalidArgumentException('Only int and uuid parameter types are supported.');
         }, $path);
 
         // Ensure the regex matches the entire path.
