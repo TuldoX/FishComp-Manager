@@ -3,27 +3,27 @@ services:
     container_name: db
     image: postgres:17
     restart: unless-stopped
-    env_file:
-      - .env
+    env_file: .env
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     volumes:
       - ./data/postgresql:/var/lib/postgresql/data
     networks:
-      - fishcomp-manager
+      fishcomp-manager:
+        ipv4_address: 172.21.0.2
 
   pgadmin:
     container_name: pg_admin
     image: dpage/pgadmin4:latest
     restart: unless-stopped
-    env_file:
-      - .env
+    env_file: .env
     ports:
-      - "8088:80"
+      - "127.0.0.1:8088:80"
     volumes:
       - ./data/pgadmin:/var/lib/pgadmin
     networks:
-      - fishcomp-manager
+      fishcomp-manager:
+        ipv4_address: 172.21.0.3
     depends_on:
       - database
 
@@ -34,29 +34,35 @@ services:
     volumes:
       - ./backend:/var/www
     ports:
-      - "9000:9000"
-    env_file:
-      - .env
+      - "127.0.0.1:9000:9000"
+    env_file: .env
     working_dir: /var/www
+    networks:
+      fishcomp-manager:
+        ipv4_address: 172.21.0.4
     depends_on:
       - database
-    networks:
-      - fishcomp-manager
 
   frontend:
     build: ./frontend
     container_name: frontend
     restart: unless-stopped
     ports:
-      - "80:80"
+      - "127.0.0.1:80:80"
     volumes:
       - ./frontend:/usr/share/nginx/html
     networks:
-      - fishcomp-manager
+      fishcomp-manager:
+        ipv4_address: 172.21.0.5
     depends_on:
       - backend
 
 networks:
   fishcomp-manager:
     driver: bridge
-    internal: true
+    ipam:
+      config:
+        - subnet: 172.21.0.0/24
+          gateway: 172.21.0.1
+      options:
+        com.docker.network.bridge.enable_ip_masquerade: "false"
