@@ -7,23 +7,10 @@ use Ramsey\Uuid\UuidInterface;
 
 class Competitor implements JsonSerializable {
     private  UuidInterface $id;
-    private string $name;
+    private string $first_name;
+    private string $last_name;
     private int $location;
     private UuidInterface $refereeId;
-
-    /**
-     * @param UuidInterface $id
-     * @param string $name
-     * @param int $location
-     * @param UuidInterface $refereeId
-     */
-    public function __construct(UuidInterface $id, string $name, int $location, UuidInterface $refereeId)
-    {
-        $this->id = $id;
-        $this->name = $name;
-        $this->location = $location;
-        $this->refereeId = $refereeId;
-    }
 
     public function getId(): UuidInterface
     {
@@ -35,14 +22,22 @@ class Competitor implements JsonSerializable {
         $this->id = $id;
     }
 
-    public function getName(): string
+    public function getFirstName(): string
     {
-        return $this->name;
+        return $this->first_name;
     }
 
-    public function setName(string $name): void
+    public function setFirstName(string $first_name): void
     {
-        $this->name = $name;
+        $this->first_name = $first_name;
+    }
+
+    public function getLastName():string {
+        return $this->last_name;
+    }
+
+    public function setLastName(string $last_name) : void {
+        $this->last_name = $last_name;
     }
 
     public function getLocation(): int
@@ -68,9 +63,9 @@ class Competitor implements JsonSerializable {
     public function jsonSerialize(): array {
         return [
             'id' => (string) $this->id,
-            'name' => $this->name,
+            'first_name' => $this->first_name,
+            'last_name'=> $this->last_name,
             'location' => $this->location,
-            'refereeId' => (string) $this->refereeId
         ];
     }
 }
