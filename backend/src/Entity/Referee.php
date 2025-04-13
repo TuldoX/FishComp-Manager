@@ -1,29 +1,48 @@
 <?php
 namespace App\Entity;
 
+use Ramsey\Uuid\UuidInterface;
 use Ramsey\Uuid\Uuid;
+use JsonSerializable;
 
-class Referee{
-    private Uuid $id;
-    private string $code;
+class Referee implements JsonSerializable {
+    private  UuidInterface $id;
+    private string $first_name;
+    private string $last_name;
 
-    public function getId(): Uuid
+    public function getId(): UuidInterface
     {
         return $this->id;
     }
 
-    public function setId(Uuid $id): void
+    public function setId(UuidInterface $id): void
     {
         $this->id = $id;
     }
 
-    public function getCode(): string
+    public function getFirstName(): string
     {
-        return $this->code;
+        return $this->first_name;
     }
 
-    public function setCode(string $code): void
+    public function setFirstName(string $first_name): void
     {
-        $this->code = $code;
+        $this->first_name = $first_name;
+    }
+
+    public function getLastName():string {
+        return $this->last_name;
+    }
+
+    public function setLastName(string $last_name) : void {
+        $this->last_name = $last_name;
+    }
+
+    public function jsonSerialize(): array {
+        return [
+            'id' => (string) $this->id,
+            'first_name' => $this->first_name,
+            'last_name'=> $this->last_name,
+        ];
     }
 }

@@ -1,7 +1,8 @@
 class Referee {
-    constructor(id, code) {
+    constructor(id, first_name, last_name) {
         this.id = id;
-        this.code = code;
+        this.first_name = first_name;
+        this.last_name = last_name;
     }
 }
 
@@ -60,7 +61,7 @@ document.querySelector(".form").addEventListener("submit", async (event) => {
         const result = await login(input);
 
         if (result.status === 200) {
-            let referee = new Referee(result.data.id, result.data.code);
+            let referee = new Referee(result.data.id, result.data.first_name,result.data.last_name);
             localStorage.setItem("referee", JSON.stringify(referee));
             // console.log("Referee stored in localStorage:", referee); // Debugging
             window.location.replace("dashboard.html");
