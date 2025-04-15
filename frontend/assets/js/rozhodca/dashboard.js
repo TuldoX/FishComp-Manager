@@ -61,7 +61,6 @@ function Render(competitor) {
         event.preventDefault();
         const id = event.target.closest('[data-competitor]').dataset.competitor;
         sessionStorage.setItem("id", JSON.stringify(id));
-        sessionStorage.setItem("selectedCompetitor", JSON.stringify(selectedCompetitor));
         window.location.replace("pridanie_ulovku.html");
     });
 }
