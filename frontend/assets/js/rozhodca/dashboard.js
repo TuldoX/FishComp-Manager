@@ -1,8 +1,9 @@
 class Competitor{
-    constructor(id,name,place,points) {
+    constructor(id,first_name, last_name,location,points = 0) {
         this.id = id;
-        this.name = name;
-        this.place = place;
+        this.first_name = first_name;
+        this.last_name = last_name;
+        this.location = location;
         this.points = points;
     }
 }
@@ -17,30 +18,21 @@ const getCompetitors = async (refereeId) => {
     return data;
 };
 
-function FormatName(fullName) {
-    let nameParts = fullName.trim().split(" ");
-    if (nameParts.length < 2) return fullName;
-
-    let firstInitial = nameParts[0][0].toUpperCase();
-    let lastName = nameParts[nameParts.length - 1];
-
-    return `${firstInitial}.${lastName}`;
-}
-
 function Render(competitor) {
     const tableBody = document.querySelector('tbody');
     const riadok = document.createElement('tr');
 
     const miesto = document.createElement('td');
-    miesto.innerText = competitor.place;
+    miesto.innerText = competitor.location;
     miesto.classList.add('place');
     riadok.appendChild(miesto);
 
     const meno = document.createElement('td');
     const a = document.createElement('a');
-    a.innerText = FormatName(competitor.name);
+    a.innerText = competitor.first_name[0] + "." + competitor.last_name;
     a.classList.add('name');
     meno.appendChild(a);
+    meno.setAttribute('data-competitor',competitor.id);
     riadok.appendChild(meno);
 
     const points = document.createElement('td');
@@ -53,24 +45,22 @@ function Render(competitor) {
     buttonContent.innerText = '+';
     buttonContent.classList.add('add-catch');
     button.appendChild(buttonContent);
+    button.setAttribute('data-competitor',competitor.id);
     riadok.appendChild(button);
 
     tableBody.appendChild(riadok);
 
     a.addEventListener('click', (event) => {
         event.preventDefault();
-        const formattedName = event.target.innerText;
-        const competitors = JSON.parse(localStorage.getItem("competitors")) || [];
-        const selectedCompetitor = competitors.find(comp => FormatName(comp.name) === formattedName);
-        sessionStorage.setItem("selectedCompetitor", JSON.stringify(selectedCompetitor));
+        const id = event.target.closest('[data-competitor]').dataset.competitor;
+        sessionStorage.setItem("id", JSON.stringify(id));
         window.location.replace("ulovky.html");
     });
 
     buttonContent.addEventListener('click', (event) => {
         event.preventDefault();
-        const formattedName = FormatName(competitor.name);
-        const competitors = JSON.parse(localStorage.getItem("competitors")) || [];
-        const selectedCompetitor = competitors.find(comp => FormatName(comp.name) === formattedName);
+        const id = event.target.closest('[data-competitor]').dataset.competitor;
+        sessionStorage.setItem("id", JSON.stringify(id));
         sessionStorage.setItem("selectedCompetitor", JSON.stringify(selectedCompetitor));
         window.location.replace("pridanie_ulovku.html");
     });
@@ -82,20 +72,18 @@ if (!referee) {
     window.location.replace("prihlasenie.html");
 }
 
-// console.log("Referee retrieved from localStorage:", referee); // Debugging
 window.addEventListener('load', () => {
     getCompetitors(referee.id)
         .then(data => {
             const competitors = [];
 
-            data.data.forEach(element => {
-                const competitor = new Competitor(element.id, element.name, element.place, element.points);
+            data.forEach(element => {
+                const competitor = new Competitor(element.id, element.first_name, element.last_name,element.location); //element.points -> zatial 0 - vnorený dotaz
                 competitors.unshift(competitor);
                 Render(competitor);
             });
 
             localStorage.setItem("competitors", JSON.stringify(competitors));
-            //console.log("Competitors stored in localStorage:", competitors); // Debugging
         })
         .catch(err => {
             console.log(err);

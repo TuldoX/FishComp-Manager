@@ -25,12 +25,11 @@ const login = async (code) => {
         });
 
         const responseData = await response.json();
-        // console.log("API Response:", responseData); // Debugging
 
         let responseObject;
 
-        if (response.status >= 200 && response.status < 300) {
-            responseObject = new Response(response.status, "OK", responseData.data);
+        if (response.status >= 200 && response.status < 300 && responseData) {
+            responseObject = new Response(response.status, "OK", responseData);
         } else if (response.status === 404) {
             responseObject = new Response(response.status, "Neplatný kód.");
         } else {
@@ -53,17 +52,16 @@ document.querySelector(".form").addEventListener("submit", async (event) => {
     const message = document.getElementById("message");
     const isValidCode = (code) => /^[a-zA-Z0-9]+$/.test(code);
 
-    if (!isValidCode(input)) {
+    if (!isValidCode(input) || input.length > 12) {
         message.innerText = "Neplatný kód.";
         message.classList.replace("message-hidden", "message");
     } else {
         submitButton.disabled = true;
         const result = await login(input);
 
-        if (result.status === 200) {
+        if (result.status === 200 && result.data) {
             let referee = new Referee(result.data.id, result.data.first_name,result.data.last_name);
             localStorage.setItem("referee", JSON.stringify(referee));
-            // console.log("Referee stored in localStorage:", referee); // Debugging
             window.location.replace("dashboard.html");
         } else {
             message.textContent = result.message;
