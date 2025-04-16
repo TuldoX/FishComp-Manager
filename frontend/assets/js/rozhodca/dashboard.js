@@ -1,5 +1,5 @@
-class Competitor{
-    constructor(id,first_name, last_name,location,points = 0) {
+class Competitor {
+    constructor(id, first_name, last_name, location, points = 0) {
         this.id = id;
         this.first_name = first_name;
         this.last_name = last_name;
@@ -9,75 +9,98 @@ class Competitor{
 }
 
 const getCompetitors = async (refereeId) => {
-    const response = await fetch(`/referees/${refereeId}/competitors`);
-    const data = await response.json();
-
-    if(response.status !== 200){
-        throw new Error(`Response status: ${response.status}`);
+    try {
+        const response = await fetch(`/referees/${refereeId}/competitors`);
+        if (!response.ok) {
+            throw new Error(`HTTP error: ${response.status}`);
+        }
+        return await response.json();
+    } catch (err) {
+        console.error("Fetch failed:", err);
+        throw err;
     }
-    return data;
 };
+
+function setCompetitorSession(id, fullName) {
+    sessionStorage.setItem("id", JSON.stringify(id));
+    sessionStorage.setItem("name", JSON.stringify(fullName));
+}
 
 function Render(competitor) {
     const tableBody = document.querySelector('tbody');
+    if (!tableBody) return;
+
     const riadok = document.createElement('tr');
 
+    // Location cell
     const miesto = document.createElement('td');
-    miesto.innerText = competitor.location;
+    miesto.textContent = competitor.location;
     miesto.classList.add('place');
     riadok.appendChild(miesto);
 
+    // Name cell
     const meno = document.createElement('td');
     const a = document.createElement('a');
-    a.innerText = competitor.first_name[0] + "." + competitor.last_name;
+    a.textContent = `${competitor.first_name[0]}.${competitor.last_name}`;
     a.classList.add('name');
     meno.appendChild(a);
-    meno.setAttribute('data-competitor',competitor.id);
+    meno.setAttribute('data-competitor', competitor.id);
     riadok.appendChild(meno);
 
+    // Points cell
     const points = document.createElement('td');
-    points.innerText = competitor.points;
+    points.textContent = competitor.points;
     points.classList.add('points');
     riadok.appendChild(points);
 
+    // Button cell
     const button = document.createElement('td');
     const buttonContent = document.createElement('button');
-    buttonContent.innerText = '+';
+    buttonContent.textContent = '+';
     buttonContent.classList.add('add-catch');
     button.appendChild(buttonContent);
-    button.setAttribute('data-competitor',competitor.id);
     riadok.appendChild(button);
 
     tableBody.appendChild(riadok);
 
-    a.addEventListener('click', (event) => {
+    // Name click → view catches
+    meno.addEventListener('click', (event) => {
         event.preventDefault();
-        const id = event.target.closest('[data-competitor]').dataset.competitor;
-        sessionStorage.setItem("id", JSON.stringify(id));
+        const id = meno.dataset.competitor;
+        setCompetitorSession(id, `${competitor.first_name} ${competitor.last_name}`);
         window.location.replace("ulovky.html");
     });
 
+    // Button click → add catch
     buttonContent.addEventListener('click', (event) => {
         event.preventDefault();
-        const id = event.target.closest('[data-competitor]').dataset.competitor;
-        sessionStorage.setItem("id", JSON.stringify(id));
+        const id = meno.dataset.competitor;
+        setCompetitorSession(id, `${competitor.first_name} ${competitor.last_name}`);
         window.location.replace("pridanie_ulovku.html");
     });
 }
 
+// Load referee from localStorage
 const referee = JSON.parse(localStorage.getItem("referee"));
 
 if (!referee) {
     window.location.replace("prihlasenie.html");
 }
 
+// Load competitors on page load
 window.addEventListener('load', () => {
     getCompetitors(referee.id)
         .then(data => {
             const competitors = [];
-
+            data.sort((a, b) => a.location - b.location); // ascending by location number
             data.forEach(element => {
-                const competitor = new Competitor(element.id, element.first_name, element.last_name,element.location); //element.points -> zatial 0 - vnorený dotaz
+                const competitor = new Competitor(
+                    element.id,
+                    element.first_name,
+                    element.last_name,
+                    element.location,
+                    element.points || 0 // default to 0 if not present
+                );
                 competitors.unshift(competitor);
                 Render(competitor);
             });
@@ -85,17 +108,20 @@ window.addEventListener('load', () => {
             localStorage.setItem("competitors", JSON.stringify(competitors));
         })
         .catch(err => {
-            console.log(err);
+            console.error(err);
             window.alert('Chyba v požiadavke.');
         });
 });
-document.getElementById('koniec').addEventListener('click', () => {
-    
-    const confirmed = confirm('Naozaj sa chcete odhlásiť? (Prebehne odoslanie údajov a vy už nebudete môcť nič upraviť.)');
 
-    if(confirmed){
-        localStorage.clear();
-        sessionStorage.clear();
-        window.location.replace('prihlasenie.html');
-    }
-})
+// Logout button
+const logoutButton = document.getElementById('koniec');
+if (logoutButton) {
+    logoutButton.addEventListener('click', () => {
+        const confirmed = confirm('Naozaj sa chcete odhlásiť? (Prebehne odoslanie údajov a vy už nebudete môcť nič upraviť.)');
+        if (confirmed) {
+            localStorage.clear();
+            sessionStorage.clear();
+            window.location.replace('prihlasenie.html');
+        }
+    });
+}

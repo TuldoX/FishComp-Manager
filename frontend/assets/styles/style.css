@@ -165,7 +165,7 @@ th {
 
 .name{
     color: black;
-    text-decoration: underline;
+    text-decoration: none;
 }
 
 .add-catch{
