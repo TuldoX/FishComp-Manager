@@ -2,37 +2,33 @@
 
 namespace App\Entity;
 
-use Ramsey\Uuid\Uuid;
+use JsonSerializable;
+use Ramsey\Uuid\UuidInterface;
 
-class CatchRecord{
-    private Uuid $id;
+class CatchRecord implements JsonSerializable {
+    private UuidInterface $id;
     private string $species;
     private float $points;
-    private Uuid $competitorId;
-
-    public function getSpecies(): string
-    {
-        return $this->species;
-    }
+    private UuidInterface $competitorId;
 
     public function setSpecies(string $species): void
     {
         $this->species = $species;
     }
 
-    public function getId(): Uuid
+    public function getSpecies(): string
     {
-        return $this->id;
+        return $this->species;
     }
 
-    public function setId(Uuid $id): void
+    public function setId(UuidInterface $id): void
     {
         $this->id = $id;
     }
 
-    public function getPoints(): float
+    public function getId(): UuidInterface
     {
-        return $this->points;
+        return $this->id;
     }
 
     public function setPoints(float $points): void
@@ -40,14 +36,27 @@ class CatchRecord{
         $this->points = $points;
     }
 
-    public function getCompetitorId(): Uuid
+    public function getPoints(): float
     {
-        return $this->competitorId;
+        return $this->points;
     }
 
-    public function setCompetitorId(Uuid $competitorId): void
+    public function setCompetitorId(UuidInterface $competitorId): void
     {
         $this->competitorId = $competitorId;
     }
 
+    public function getCompetitorId(): UuidInterface
+    {
+        return $this->competitorId;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->id->toString(),
+            'species' => $this->species,
+            'points' => $this->points
+        ];
+    }
 }

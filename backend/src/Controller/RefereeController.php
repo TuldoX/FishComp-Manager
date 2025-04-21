@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Referee;
 use App\Service\RefereeModel;
 use App\View\JsonView;
 use Ramsey\Uuid\Uuid;
