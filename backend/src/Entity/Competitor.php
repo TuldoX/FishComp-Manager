@@ -12,6 +12,18 @@ class Competitor implements JsonSerializable {
     private int $location;
     private UuidInterface $refereeId;
 
+    private float $points;
+
+    public function getPoints(): float
+    {
+        return $this->points;
+    }
+
+    public function setPoints(float $points): void
+    {
+        $this->points = $points;
+    }
+
     public function getId(): UuidInterface
     {
         return $this->id;
@@ -66,6 +78,7 @@ class Competitor implements JsonSerializable {
             'first_name' => $this->first_name,
             'last_name'=> $this->last_name,
             'location' => $this->location,
+            'points' => $this->points,
         ];
     }
 }

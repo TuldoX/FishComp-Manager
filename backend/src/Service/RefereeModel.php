@@ -7,6 +7,7 @@ use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use PDO;
 use PDOException;
+use RuntimeException;
 
 class RefereeModel {
 
@@ -22,7 +23,7 @@ class RefereeModel {
             $password = getenv('POSTGRES_PASSWORD') ?: 'default_password';
 
             if ($host === 'default_database' || $user === 'default_user') {
-                throw new \RuntimeException('Critical database configuration is missing. Please set the required environment variables.');
+                throw new RuntimeException('Critical database configuration is missing. Please set the required environment variables.');
             }
 
             $dsn = sprintf('pgsql:host=%s;port=%s;dbname=%s', $host, $port, $dbname);
@@ -37,15 +38,27 @@ class RefereeModel {
         } catch (PDOException $e) {
             // Log the error and rethrow it
             error_log('Database connection failed: ' . $e->getMessage());
-            throw new \RuntimeException('Failed to connect to the database.');
+            throw new RuntimeException('Failed to connect to the database.');
         }
     }
 
     public function getCompetitors(UuidInterface $refereeId): array {
         try {
-            $sql = "SELECT id, first_name, last_name, location FROM competitors WHERE referee = :refereeId";
+            $sql = "SELECT 
+                    c.id,
+                    c.first_name,
+                    c.last_name,
+                    c.location,
+                (
+                    SELECT COALESCE(SUM(length), 0)
+                    FROM catches
+                    WHERE catches.competitor= c.id
+                ) AS total_points
+                FROM competitors c
+                WHERE c.referee = :refereeId;
+                ";
             $statement = $this->pdo->prepare($sql);
-            $statement->bindValue(':refereeId', $refereeId->toString(), PDO::PARAM_STR);
+            $statement->bindValue(':refereeId', $refereeId->toString());
             $statement->execute();
 
             $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
@@ -67,7 +80,7 @@ class RefereeModel {
         try {
             $sql = "SELECT COUNT(*) FROM referees WHERE id = :refereeId";
             $statement = $this->pdo->prepare($sql);
-            $statement->bindValue(':refereeId', $refereeId->toString(), PDO::PARAM_STR);
+            $statement->bindValue(':refereeId', $refereeId->toString());
             $statement->execute();
 
             return $statement->fetchColumn() > 0;
@@ -85,6 +98,7 @@ class RefereeModel {
         $competitor->setFirstName($competitorData['first_name']);
         $competitor->setLastName($competitorData['last_name']);
         $competitor->setLocation($competitorData['location']);
+        $competitor->setPoints($competitorData['total_points']);
 
         return $competitor;
     }
