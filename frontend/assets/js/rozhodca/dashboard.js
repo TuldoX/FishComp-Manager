@@ -91,7 +91,6 @@ if (!referee) {
 window.addEventListener('load', () => {
     getCompetitors(referee.id)
         .then(data => {
-            const competitors = [];
             data.sort((a, b) => a.location - b.location); // ascending by location number
             data.forEach(element => {
                 const competitor = new Competitor(
@@ -101,11 +100,8 @@ window.addEventListener('load', () => {
                     element.location,
                     element.points || 0 // default to 0 if not present
                 );
-                competitors.unshift(competitor);
                 Render(competitor);
             });
-
-            localStorage.setItem("competitors", JSON.stringify(competitors));
         })
         .catch(err => {
             console.error(err);

@@ -31,7 +31,7 @@ class CompetitorController{
             return;
         }
 
-        $view->render(['data' => $data]);
+        $view->render($data);
     }
 }
 

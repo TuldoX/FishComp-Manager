@@ -1,15 +1,12 @@
 <?php
 namespace App\Service;
 
-use App\Entity\CatchRecord;
-use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use PDO;
 use PDOException;
 use RuntimeException;
+class CatchModel{
 
-class CompetitorModel
-{
     private PDO $pdo;
 
     // Database connection when creating RefereeModel object
@@ -42,45 +39,22 @@ class CompetitorModel
         }
     }
 
-    public function getCatches(UuidInterface $competitorId): array
-    {
+    public function deleteCatch(UuidInterface $catchId) : void{
         try {
-            $sql = "SELECT 
-                    c.id,
-                    (
-                        SELECT name 
-                        FROM species
-                        WHERE species.id = c.species
-                    ) AS species,
-                    c.length as points
-                FROM catches c
-                WHERE c.competitor = :competitorId
-                ORDER BY points DESC
-                ";
+            $sql = "DELETE FROM catches WHERE id = :catchId";
             $statement = $this->pdo->prepare($sql);
-            $statement->bindValue(':competitorId', $competitorId->toString());
+            $statement->bindValue(':catchId', $catchId->toString());
             $statement->execute();
-
-            $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
-
-            $catches = [];
-            foreach ($rows as $row) {
-                $catches[] = $this->hydrateCatch($row);
-            }
-
-            return $catches;
         } catch (PDOException $e) {
-            // Log error and return an empty array
+            // Log error
             error_log($e->getMessage());
-            return [];
         }
     }
-
-    public function competitorExists(UuidInterface $competitorId): bool {
+    public function catchExists(UuidInterface $catchId): bool{
         try {
-            $sql = "SELECT COUNT(*) FROM competitors WHERE id = :competitorId";
+            $sql = "SELECT COUNT(*) FROM catches WHERE id = :catchId";
             $statement = $this->pdo->prepare($sql);
-            $statement->bindValue(':competitorId', $competitorId->toString());
+            $statement->bindValue(':catchId', $catchId->toString());
             $statement->execute();
 
             return $statement->fetchColumn() > 0;
@@ -89,15 +63,5 @@ class CompetitorModel
             error_log($e->getMessage());
             return false;
         }
-    }
-
-    private function hydrateCatch(array $row): CatchRecord{
-        $catch  = new CatchRecord();
-
-        $catch->setId(Uuid::fromString($row['id']));
-        $catch->setSpecies($row['species']);
-        $catch->setPoints($row['points']);
-
-        return $catch;
     }
 }
