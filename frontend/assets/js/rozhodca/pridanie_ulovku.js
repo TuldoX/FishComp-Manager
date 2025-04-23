@@ -1,57 +1,86 @@
 class Catch{
-    constructor(name,points,competitorId){
-        this.species = name;
-        this.points = points;
-        this.competitorId = competitorId;
+    constructor(competitor,referee,species, length){
+        this.competitor = competitor;
+        this.referee = referee;
+        this.species = species;
+        this.length = length;
+    }
+}
+
+class Species {
+    constructor(id,name,max_length){
+        this.id = id;
+        this.name = name;
+        this.max_length = max_length;
     }
 }
 
 const getSpeciesList = async () => {
-    const response = await fetch('/species');
-    const data = await response.json();
-
-    if(response.status !== 200){
-        throw new Error(`Response status: ${response.status}`);
+    try {
+        const response = await fetch(`/species`);
+        if (!response.ok) {
+            throw new Error(`HTTP error: ${response.status}`);
+        }
+        return await response.json();
+    } catch (err) {
+        console.error("Fetch failed:", err);
+        throw err;
     }
-
-    return data;
 }
 
 const postCatch = async (ulovok) => {
-    const response = await fetch('/catches',{
+    const response = await fetch('/catches', {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
         body: JSON.stringify({
-            "competitorId": ulovok.competitorId,
-            "druh": ulovok.species,
-            "points": ulovok.points
+            "competitor": ulovok.competitor,
+            "referee": ulovok.referee,
+            "species": ulovok.species,
+            "length": ulovok.length
         })
     });
 
-    const odpoved = await response.json();
-    if(response.status !== 200){
-        throw new Error(`Response status: ${response.status}`);
+    if (response.status === 201) {
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+            return await response.json();
+        }
+        return null;
+    } else {
+        let errorMsg = `Chyba ${response.status}`;
+        try {
+            const errData = await response.json();
+            if (errData.message) errorMsg += `: ${errData.message}`;
+        } catch (_) {
+        }
+        throw new Error(errorMsg);
     }
+};
 
-    return odpoved;
+function Render(element){
+    const select = document.querySelector('.input-select');
+    const option = document.createElement('option');
+    option.textContent = element.name;
+    option.value = element.id;
+    option.setAttribute('data-max_length', element.max_length);
+    select.appendChild(option);
 }
-
-const competitor = JSON.parse(sessionStorage.getItem('selectedCompetitor'));
 
 window.addEventListener('load', () => {
     const name = document.querySelector('.name-display');
-    name.innerText = competitor.name;
+    name.textContent = JSON.parse(sessionStorage.getItem("name"));
 
     getSpeciesList()
     .then(data => {
-        const select = document.querySelector('.input-select');
-        data.data.forEach(element => {
-            const option = document.createElement('option');
-            option.innerText = element.name;
-            option.value = element.name;
-            select.appendChild(option);
+        if(data.length === 0){
+            window.alert('Nastala chyba');
+            return;
+        }
+        data.forEach(element => {
+            const specie = new Species(element.id,element.name,element.max_length)
+            Render(specie);
         });
     })
     .catch(() => {
@@ -64,8 +93,8 @@ document.querySelector('.back-arrow').addEventListener('click', () => {
     const cm = document.querySelector('.input-number').value;
 
     if (druh !== "" || cm !== ""){
-        const Confirm = confirm('Naozaj chcete opustiť stránku? Zadané údaje sa zahodia.');
-        if(Confirm){
+        const confirmed = confirm('Naozaj chcete opustiť stránku? Zadané údaje sa zahodia.');
+        if(confirmed){
             window.location.replace("dashboard.html");
             sessionStorage.clear();
         }
@@ -79,27 +108,40 @@ document.querySelector('.back-arrow').addEventListener('click', () => {
 document.querySelector('.button').addEventListener('click', (event) => {
     event.preventDefault();
 
-    const druh = document.querySelector('.input-select').value;
+    const select = document.querySelector('.input-select');
+    const selectedOption = select.options[select.selectedIndex];
+    const druh = selectedOption.value;
     const cm = Number(document.querySelector('.input-number').value);
+    const maxLength = selectedOption.dataset.max_length;
 
-    if (isNaN(cm) || cm <= 0) {
-        alert('Zadajte platnú dĺžku!');
+    const button = event.target;
+    button.disabled = true;
+
+    if(!druh){
+        alert('Vyberte druh!');
+        button.disabled = false;
         return;
     }
 
-    const ulovok = new Catch(druh, cm, competitor.id);
-    console.log(ulovok);
-
-    if (druh !== "") {
-        postCatch(ulovok)
-            .then(response => {
-                console.log(response);
-                window.location.replace('ulovky.html');
-            })
-            .catch(() => {
-                window.alert('Nastala chyba. Skúste pridať úlovok znovu.');
-            });
-    } else {
-        alert('Vyberte možnosť!');
+    if (isNaN(cm) || cm <= 0 || cm > Number(maxLength)) {
+        alert('Zadajte platnú dĺžku!');
+        button.disabled = false;
+        return;
     }
+
+    const competitor = JSON.parse(sessionStorage.getItem('id'));
+    const referee = JSON.parse(localStorage.getItem('referee')).id;
+
+    const ulovok = new Catch(competitor,referee,Number(druh),cm);
+
+    postCatch(ulovok)
+        .then(() => {
+            button.disabled = false;
+            sessionStorage.setItem("successMessage", "Úspešne ste pridali úlovok!");
+            window.location.replace('ulovky.html');
+        })
+        .catch(() => {
+            window.alert('Nastala chyba. Skúste pridať úlovok znovu.');
+            button.disabled = false;
+        });
 });

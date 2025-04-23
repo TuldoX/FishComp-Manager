@@ -89,6 +89,12 @@ if (!referee) {
 
 // Load competitors on page load
 window.addEventListener('load', () => {
+    const message = sessionStorage.getItem("successMessage");
+    if (message) {
+        alert(message);
+        sessionStorage.clear();
+    }
+
     getCompetitors(referee.id)
         .then(data => {
             data.sort((a, b) => a.location - b.location); // ascending by location number
