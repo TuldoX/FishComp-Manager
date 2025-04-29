@@ -6,9 +6,10 @@
 - [ ] Remake folder structure - podľa Mečiara
 - [ ] Rozhodca page - select name až potom prihlásenie
 - [ ] Add PHP to Dockerfile
+- [ ] Validácia vytvorených dát na FE ?
 
 ## Backend
 - [ ] API calls with prefix - full URL (localhost:9000)
-- [ ] Post request
-- [ ] Input validation
+- [x] ~~Post request - Model, okopírovať od Mečiara create Person, validácia dát v Controlleri~~
+- [x] ~~Input validation~~
 - [ ] JWT logic

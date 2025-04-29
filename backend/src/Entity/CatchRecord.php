@@ -9,7 +9,28 @@ class CatchRecord implements JsonSerializable {
     private UuidInterface $id;
     private string $species;
     private float $points;
-    private UuidInterface $competitorId;
+    private UuidInterface $competitor;
+    private UuidInterface $referee;
+
+    public function getCompetitor(): UuidInterface
+    {
+        return $this->competitor;
+    }
+
+    public function setCompetitor(UuidInterface $competitor): void
+    {
+        $this->competitor = $competitor;
+    }
+
+    public function getReferee(): UuidInterface
+    {
+        return $this->referee;
+    }
+
+    public function setReferee(UuidInterface $referee): void
+    {
+        $this->referee = $referee;
+    }
 
     public function setSpecies(string $species): void
     {
@@ -41,15 +62,6 @@ class CatchRecord implements JsonSerializable {
         return $this->points;
     }
 
-    public function setCompetitorId(UuidInterface $competitorId): void
-    {
-        $this->competitorId = $competitorId;
-    }
-
-    public function getCompetitorId(): UuidInterface
-    {
-        return $this->competitorId;
-    }
 
     public function jsonSerialize(): array
     {

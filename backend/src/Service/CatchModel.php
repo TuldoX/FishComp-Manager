@@ -2,9 +2,12 @@
 namespace App\Service;
 
 use Ramsey\Uuid\UuidInterface;
+use Ramsey\Uuid\Uuid;
 use PDO;
 use PDOException;
 use RuntimeException;
+use App\Entity\CatchRecord;
+
 class CatchModel{
 
     private PDO $pdo;
@@ -50,6 +53,28 @@ class CatchModel{
             error_log($e->getMessage());
         }
     }
+
+    public function addCatch(array $catchData) : CatchRecord{
+        $catch = $this->hydrateCatch($catchData);
+
+        $sql = "INSERT INTO catches (id, species, length, competitor, referee) 
+                VALUES (:id, :species, :points, :competitor, :referee)";
+        $statement = $this->pdo->prepare($sql);
+
+        $result = $statement->execute([
+            ':id' => $catch->getId()->toString(),
+            ':species' => $catch->getSpecies(),
+            ':points' => $catch->getPoints(),
+            ':competitor' => $catch->getCompetitor()->toString(),
+            ':referee' => $catch->getReferee()->toString()
+        ]);
+
+        if (!$result) {
+            throw new RuntimeException('Error creating person');
+        }
+
+        return $catch;
+    }
     public function catchExists(UuidInterface $catchId): bool{
         try {
             $sql = "SELECT COUNT(*) FROM catches WHERE id = :catchId";
@@ -63,5 +88,20 @@ class CatchModel{
             error_log($e->getMessage());
             return false;
         }
+    }
+
+    public function hydrateCatch(array $catchData): CatchRecord{
+        $catch  = new CatchRecord();
+        if(isset($catchData['id'])){
+            $catch->setId(Uuid::fromString($catchData['id']));
+        }
+        else{
+            $catch->setId(Uuid::uuid4());
+        }
+        $catch->setCompetitor(Uuid::fromString($catchData['competitor']));
+        $catch->setReferee(Uuid::fromString($catchData['referee']));
+        $catch->setSpecies($catchData['species']);
+        $catch->setPoints($catchData['length']);
+        return $catch;
     }
 }

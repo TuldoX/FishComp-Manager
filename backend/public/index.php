@@ -15,5 +15,6 @@ $router->post('/auth/referee', AuthController::class,'refereeLogin');
 $router->get('/competitors/{competitorId:uuid}/catches', CompetitorController::class,'getCatches');
 $router->delete('/catches/{catchId:uuid}', CatchController::class,'deleteCatch');
 $router->get('/species', SpeciesController::class,'getSpecies');
+$router->post('/catches', CatchController::class,'createCatch');
 
 $router->dispatch();
