@@ -47,14 +47,32 @@ services:
     build: ./frontend
     container_name: frontend
     restart: unless-stopped
-    ports:
-      - "127.0.0.1:80:80"
     volumes:
-      - ./frontend:/usr/share/nginx/html
+      - ./frontend:/var/www
+    ports:
+      - "127.0.0.1:9001:9000"  # Direct access to frontend PHP-FPM on different port
+    working_dir: /var/www
     networks:
       fishcomp-manager:
         ipv4_address: 172.21.0.5
     depends_on:
+      - backend
+
+  webserver:
+    build: ./nginx
+    container_name: webserver
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./frontend:/var/www/frontend
+      - ./backend:/var/www/backend
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    networks:
+      fishcomp-manager:
+        ipv4_address: 172.21.0.6
+    depends_on:
+      - frontend
       - backend
 
 networks:

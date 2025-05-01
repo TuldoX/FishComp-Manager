@@ -1,10 +1,18 @@
-FROM nginx:latest
+FROM php:8.2-fpm
 
-#copy everything in the frontend folder to this folder
-COPY . /usr/share/nginx/html
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+    zip unzip curl libzip-dev
 
-#copy configuration to configuration inside container
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Set working directory
+WORKDIR /var/www
 
-#expose port
-EXPOSE 80
+# Composer install
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Copy app files
+COPY . .
+
+EXPOSE 9000
+
+CMD ["php-fpm"]
