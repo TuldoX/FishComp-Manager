@@ -11,3 +11,6 @@
 ## Backend
 - [ ] API calls with prefix - full URL (localhost:9000 + api)
 - [ ] JWT logic
+
+
+- [ ] Branch merge
