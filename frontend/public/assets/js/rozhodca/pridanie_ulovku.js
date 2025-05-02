@@ -1,3 +1,5 @@
+const prefix = "http://localhost:8081/api";
+
 class Catch{
     constructor(competitor,referee,species, length){
         this.competitor = competitor;
@@ -17,7 +19,7 @@ class Species {
 
 const getSpeciesList = async () => {
     try {
-        const response = await fetch(`/species`);
+        const response = await fetch(prefix + `/species`);
         if (!response.ok) {
             throw new Error(`HTTP error: ${response.status}`);
         }
@@ -29,7 +31,7 @@ const getSpeciesList = async () => {
 }
 
 const postCatch = async (ulovok) => {
-    const response = await fetch('/catches', {
+    const response = await fetch(prefix + '/catches', {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -95,12 +97,12 @@ document.querySelector('.back-arrow').addEventListener('click', () => {
     if (druh !== "" || cm !== ""){
         const confirmed = confirm('Naozaj chcete opustiť stránku? Zadané údaje sa zahodia.');
         if(confirmed){
-            window.location.replace("dashboard.html");
+            window.location.replace("dashboard");
             sessionStorage.clear();
         }
     }
     else {
-        window.location.replace("dashboard.html");
+        window.location.replace("dashboard");
         sessionStorage.clear();
     }
 });
@@ -138,7 +140,7 @@ document.querySelector('.button').addEventListener('click', (event) => {
         .then(() => {
             button.disabled = false;
             sessionStorage.setItem("successMessage", "Úspešne ste pridali úlovok!");
-            window.location.replace('ulovky.html');
+            window.location.replace('ulovky');
         })
         .catch(() => {
             window.alert('Nastala chyba. Skúste pridať úlovok znovu.');

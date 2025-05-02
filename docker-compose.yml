@@ -5,12 +5,12 @@ services:
     restart: unless-stopped
     env_file: .env
     ports:
-      - "127.0.0.1:5432:5432"
+      - "5432:5432"
     volumes:
       - ./data/postgresql:/var/lib/postgresql/data
     networks:
       fishcomp-manager:
-        ipv4_address: 172.21.0.2
+        ipv4_address: 172.21.0.4
 
   pgadmin:
     container_name: pg_admin
@@ -18,61 +18,43 @@ services:
     restart: unless-stopped
     env_file: .env
     ports:
-      - "127.0.0.1:8088:80"
+      - "8088:80"
     volumes:
       - ./data/pgadmin:/var/lib/pgadmin
     networks:
       fishcomp-manager:
-        ipv4_address: 172.21.0.3
+        ipv4_address: 172.21.0.5
     depends_on:
       - database
 
   backend:
-    build: ./backend
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    image: php-development:8.3
     container_name: backend
     restart: unless-stopped
     volumes:
       - ./backend:/var/www
     ports:
-      - "127.0.0.1:9000:9000"
+      - "8081:80"
     env_file: .env
-    working_dir: /var/www
     networks:
       fishcomp-manager:
-        ipv4_address: 172.21.0.4
-    depends_on:
-      - database
+        ipv4_address: 172.21.0.3
 
   frontend:
-    build: ./frontend
+    image: php-development:8.3
     container_name: frontend
-    restart: unless-stopped
-    volumes:
-      - ./frontend:/var/www
-    ports:
-      - "127.0.0.1:9001:9000"  # Direct access to frontend PHP-FPM on different port
-    working_dir: /var/www
-    networks:
-      fishcomp-manager:
-        ipv4_address: 172.21.0.5
-    depends_on:
-      - backend
-
-  webserver:
-    build: ./nginx
-    container_name: webserver
     restart: unless-stopped
     ports:
       - "80:80"
     volumes:
-      - ./frontend:/var/www/frontend
-      - ./backend:/var/www/backend
-      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./frontend:/var/www
     networks:
       fishcomp-manager:
-        ipv4_address: 172.21.0.6
+        ipv4_address: 172.21.0.2
     depends_on:
-      - frontend
       - backend
 
 networks:

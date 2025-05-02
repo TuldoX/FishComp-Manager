@@ -1,47 +1,36 @@
 <?php
 
-namespace pwa\View;
+namespace App\View;
 
 use InvalidArgumentException;
 
-/**
- * Renders HTML views.
- */
 class HtmlView
 {
-    private string $templatesDir;
+    private string $templatePath;
 
     public function __construct()
     {
-        $basePath = dirname(__DIR__);
-        $this->templatesDir = $basePath . '/templates';
-
-        if (!is_dir($this->templatesDir)) {
-            throw new InvalidArgumentException("Templates directory not found or is not a directory: " . $this->templatesDir);
-        }
+        // Set the template directory path
+        $this->templatePath = dirname(__DIR__) . '/templates';
     }
 
-    /**
-     * Renders the specified HTML template file.
-     *
-     * @param string $templateFilename The name of the template file (e.g., 'index.html') relative to the templates directory.
-     * @param int $responseCode The HTTP response code to send (default: 200)
-     *
-     * @return void
-     * @throws InvalidArgumentException If the template file does not exist or is not readable.
-     */
-    public function render(string $templateFilename, int $responseCode = 200): void
+    public function render(string $template, array $data = []): void
     {
-        $filePath = $this->templatesDir . '/' . ltrim($templateFilename, '/');
+        // Resolve full path for .html files
+        $templateFile = $this->templatePath . '/' . $template . '.html';
 
-        if (!file_exists($filePath) || !is_readable($filePath)) {
-            throw new InvalidArgumentException("Template file not found or is not readable: " . $templateFilename . " (Resolved path: " . $filePath . ")");
+        // Check if the file exists and is readable
+        if (!file_exists($templateFile) || !is_readable($templateFile)) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Template file not found or is not readable: %s (Resolved path: %s)',
+                    $template,
+                    $templateFile
+                )
+            );
         }
 
-        // Set headers only if they haven't been sent yet
-        http_response_code($responseCode);
-        header('Content-Type: text/html; charset=UTF-8');
-
-        readfile($filePath);
+        // Output the HTML file (no PHP processing)
+        readfile($templateFile);
     }
 }

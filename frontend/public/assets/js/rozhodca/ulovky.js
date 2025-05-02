@@ -1,5 +1,7 @@
+const prefix = "http://localhost:8081/api";
+
 const getCatches = async (competitorId) => {
-    const response = await fetch(`/competitors/${competitorId}/catches`);
+    const response = await fetch(prefix + `/competitors/${competitorId}/catches`);
 
     if (response.status === 204) {
         // No content to return
@@ -15,7 +17,7 @@ const getCatches = async (competitorId) => {
 
 
 const deleteCatch = async (catchId) => {
-    const response = await fetch(`/catches/${catchId}`, { method: "DELETE" });
+    const response = await fetch(prefix + `/catches/${catchId}`, { method: "DELETE" });
     if (response.status !== 200) {
         throw new Error(`Response status: ${response.status}`);
     }
@@ -95,6 +97,6 @@ window.addEventListener('load', () => {
 });
 
 document.querySelector('.back-arrow').addEventListener('click', () => {
-    window.location.replace("dashboard.html");
+    window.location.replace("dashboard");
     sessionStorage.clear();
 });

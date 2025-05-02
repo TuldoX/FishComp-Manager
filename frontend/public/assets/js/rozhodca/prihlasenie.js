@@ -1,3 +1,5 @@
+const prefix = "http://localhost:8081/api";
+
 class Referee {
     constructor(id, first_name, last_name) {
         this.id = id;
@@ -16,7 +18,7 @@ class Response {
 
 const login = async (code) => {
     try {
-        const response = await fetch("/auth/referee", {
+        const response = await fetch(prefix + "/auth/referee", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -62,7 +64,7 @@ document.querySelector(".form").addEventListener("submit", async (event) => {
         if (result.status === 200 && result.data) {
             let referee = new Referee(result.data.id, result.data.first_name,result.data.last_name);
             localStorage.setItem("referee", JSON.stringify(referee));
-            window.location.replace("dashboard.html");
+            window.location.replace("dashboard");
         } else {
             message.textContent = result.message;
             message.classList.replace("message-hidden", "message");
@@ -72,5 +74,5 @@ document.querySelector(".form").addEventListener("submit", async (event) => {
 });
 
 document.querySelector('.back').onclick = () => {
-    window.location.replace('../../index.html');
+    window.location.replace('/');
 };

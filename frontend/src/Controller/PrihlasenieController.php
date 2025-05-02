@@ -1,15 +1,15 @@
 <?php
 
 
-namespace pwa\Controller;
-
+namespace App\Controller;
+use App\View\HtmlView;
 class PrihlasenieController
 {
     public function index(): void
     {
         // Render the home page
-        $htmlView = new \pwa\View\HtmlView();
-        $htmlView->render('prihlasenie.html');
+        $htmlView = new HtmlView();
+        $htmlView->render('prihlasenie');
     }
 
 }

@@ -1,15 +1,20 @@
 <?php
 
+namespace App\Controller;
 
-namespace pwa\Controller;
+use App\View\HtmlView; // Fix the namespace import
 
 class HomePageController
 {
-    public function index(): void
+    private HtmlView $view;
+
+    public function __construct()
     {
-        // Render the home page
-        $htmlView = new \pwa\View\HtmlView();
-        $htmlView->render('index.html');
+        $this->view = new HtmlView();
     }
 
+    public function index(): void
+    {
+        $this->view->render('index');
+    }
 }

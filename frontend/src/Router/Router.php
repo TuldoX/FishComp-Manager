@@ -1,6 +1,6 @@
 <?php
 
-namespace pwa\Router;
+namespace App\Router;
 
 use http\Exception\InvalidArgumentException;
 use Ramsey\Uuid\Uuid;
@@ -115,7 +115,7 @@ class Router
     {
         $parameterNames = [];
         // Replace dynamic segments with named capture groups.
-        $regex = preg_replace_callback('/\{(\w+):(int|uuid)\}/', function ($matches) use (&$parameterNames) {
+        $regex = preg_replace_callback('/\{(\w+):(int|uuid)}/', function ($matches) use (&$parameterNames) {
             $parameterNames[] = $matches[1];
             if ($matches[2] === 'int') {
                 return '(?P<' . $matches[1] . '>\d+)';

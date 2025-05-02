@@ -1,3 +1,5 @@
+const prefix = "http://localhost:8081/api";
+
 class Competitor {
     constructor(id, first_name, last_name, location, points = 0) {
         this.id = id;
@@ -10,7 +12,7 @@ class Competitor {
 
 const getCompetitors = async (refereeId) => {
     try {
-        const response = await fetch(`/referees/${refereeId}/competitors`);
+        const response = await fetch(prefix + `/referees/${refereeId}/competitors`);
         if (!response.ok) {
             throw new Error(`HTTP error: ${response.status}`);
         }
@@ -68,7 +70,7 @@ function Render(competitor) {
         event.preventDefault();
         const id = meno.dataset.competitor;
         setCompetitorSession(id, `${competitor.first_name} ${competitor.last_name}`);
-        window.location.replace("ulovky.html");
+        window.location.replace("ulovky");
     });
 
     // Button click → add catch
@@ -76,7 +78,7 @@ function Render(competitor) {
         event.preventDefault();
         const id = meno.dataset.competitor;
         setCompetitorSession(id, `${competitor.first_name} ${competitor.last_name}`);
-        window.location.replace("pridanie_ulovku.html");
+        window.location.replace("pridanie_ulovku");
     });
 }
 
@@ -84,7 +86,7 @@ function Render(competitor) {
 const referee = JSON.parse(localStorage.getItem("referee"));
 
 if (!referee) {
-    window.location.replace("prihlasenie.html");
+    window.location.replace("prihlasenie");
 }
 
 // Load competitors on page load
@@ -123,7 +125,7 @@ if (logoutButton) {
         if (confirmed) {
             localStorage.clear();
             sessionStorage.clear();
-            window.location.replace('prihlasenie.html');
+            window.location.replace('prihlasenie');
         }
     });
 }
