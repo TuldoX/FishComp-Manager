@@ -8,8 +8,7 @@
     "ext-pgsql": "*",
     "ramsey/uuid": "^4.7",
     "firebase/php-jwt": "^6.11",
-    "ext-pdo": "*",
-    "ext-http": "*"
+    "ext-pdo": "*"
   },
   "autoload": {
     "psr-4": {
