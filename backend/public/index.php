@@ -25,5 +25,6 @@ $router->get('/api/competitors/{competitorId:uuid}/catches', CompetitorControlle
 $router->delete('/api/catches/{catchId:uuid}', CatchController::class,'deleteCatch');
 $router->get('/api/species', SpeciesController::class,'getSpecies');
 $router->post('/api/catches', CatchController::class,'createCatch');
+$router->post('/api/auth/test', AuthController::class, 'testEndpoint');
 
 $router->dispatch();

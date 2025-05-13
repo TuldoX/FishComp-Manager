@@ -9,36 +9,41 @@ class Referee {
 }
 
 class Response {
-    constructor(status, message = "", data = null) {
+    constructor(status, message = "", referee = null, token = null) {
         this.status = status;
         this.message = message;
-        this.data = data;
+        this.referee = referee;
+        this.token = token;
     }
 }
 
-const login = async (code) => {
+const login = async (code, name) => {
     try {
         const response = await fetch(prefix + "/auth/referee", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ code })
+            body: JSON.stringify({ name, code })
         });
 
         const responseData = await response.json();
+        const status = response.status;
 
-        let responseObject;
-
-        if (response.status >= 200 && response.status < 300 && responseData) {
-            responseObject = new Response(response.status, "OK", responseData);
-        } else if (response.status === 404) {
-            responseObject = new Response(response.status, "Neplatný kód.");
+        if (response.ok && responseData.token && responseData.referee) {
+            return new Response(
+                status,
+                "Login successful.",
+                responseData.referee,
+                responseData.token
+            );
         } else {
-            responseObject = new Response(response.status, "Chyba v požiadavke.");
+            return new Response(
+                status,
+                responseData.message || "Nesprávne údaje.",
+                responseData
+            );
         }
-
-        return responseObject;
     } catch (error) {
         console.error("Login error:", error);
         return new Response(500, "Chyba na serveri.");
@@ -50,20 +55,24 @@ const submitButton = document.querySelector(".button-element");
 document.querySelector(".form").addEventListener("submit", async (event) => {
     event.preventDefault();
 
-    const input = document.getElementById("code").value;
+    const inputCode = document.getElementById("code").value.trim();
+    const inputName = document.getElementById("name").value.trim();
     const message = document.getElementById("message");
     const isValidCode = (code) => /^[a-zA-Z0-9]+$/.test(code);
 
-    if (!isValidCode(input) || input.length > 12) {
-        message.innerText = "Neplatný kód.";
+    if (!inputName || !isValidCode(inputCode) || inputCode.length > 12) {
+        message.innerText = "Neplatné údaje.";
         message.classList.replace("message-hidden", "message");
     } else {
+        message.classList.replace("message", "message-hidden");
+        message.textContent = "";
         submitButton.disabled = true;
-        const result = await login(input);
+        const result = await login(inputCode, inputName);
 
-        if (result.status === 200 && result.data) {
-            let referee = new Referee(result.data.id, result.data.first_name,result.data.last_name);
+        if (result.status === 200 && result.referee && result.token) {
+            let referee = new Referee(result.referee.id, result.referee.first_name, result.referee.last_name);
             localStorage.setItem("referee", JSON.stringify(referee));
+            localStorage.setItem("token", result.token);
             window.location.replace("dashboard");
         } else {
             message.textContent = result.message;

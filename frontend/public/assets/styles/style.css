@@ -62,11 +62,11 @@ body {
 }
 
 .input-text{
-    font-size: 2rem;
-    max-width: 8em;
+    font-size: 1.5rem;
+    max-width: 9.5em;
     text-align: center;
-    padding: 0.2em;
-    margin: 0.4em 0 0.1em 0;
+    padding: 0.4em;
+    margin: 0.5em 0 0.5em 0;
 }
 
 .message{
@@ -96,7 +96,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 1em;
+    margin-bottom: 1.6em;
 }
 
 .back{

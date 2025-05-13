@@ -3,83 +3,81 @@ namespace App\Service;
 
 use App\Entity\Referee;
 use Ramsey\Uuid\Uuid;
-use Ramsey\Uuid\UuidInterface;
 use PDO;
 use PDOException;
+use RuntimeException;
 
 class AuthModel {
     private PDO $pdo;
 
     public function __construct() {
+        $this->connect();
+    }
+
+    private function connect(): void {
         try {
-            $host = getenv('POSTGRES_HOST') ?: 'default_database';
+            $host = getenv('POSTGRES_HOST') ?: 'localhost';
             $port = getenv('POSTGRES_PORT') ?: 5432;
             $dbname = getenv('POSTGRES_DB') ?: 'postgres';
-            $user = getenv('POSTGRES_USER') ?: 'default_user';
-            $password = getenv('POSTGRES_PASSWORD') ?: 'default_password';
+            $user = getenv('POSTGRES_USER') ?: 'postgres';
+            $password = getenv('POSTGRES_PASSWORD') ?: '';
 
-            if ($host === 'default_database' || $user === 'default_user') {
-                throw new \RuntimeException('Critical database configuration is missing. Please set the required environment variables.');
+            $dsn = "pgsql:host=$host;port=$port;dbname=$dbname";
+            error_log("Connecting to: $dsn");
+
+            $this->pdo = new PDO($dsn, $user, $password, [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+            ]);
+        } catch (PDOException $e) {
+            error_log("Connection failed: " . $e->getMessage());
+            throw new RuntimeException("Database connection failed: " . $e->getMessage());
+        }
+    }
+
+    public function refereeLogin(string $code, string $name): ?Referee {
+        try {
+            error_log("Login attempt for: $name");
+            $sql = "SELECT id, first_name, last_name, code FROM referees WHERE user_name = :name";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindValue(':name', $name, PDO::PARAM_STR);
+            $stmt->execute();
+
+            $row = $stmt->fetch();
+            if (!$row) {
+                error_log("No user found for: $name");
+                return null;
             }
 
-            $dsn = sprintf('pgsql:host=%s;port=%s;dbname=%s', $host, $port, $dbname);
-
-            $options = [
-                PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                PDO::ATTR_EMULATE_PREPARES   => false,
-            ];
-
-            $this->pdo = new PDO($dsn, $user, $password, $options);
-        } catch (PDOException $e) {
-            // Log the error and rethrow it
-            error_log('Database connection failed: ' . $e->getMessage());
-            throw new \RuntimeException('Failed to connect to the database.');
-        }
-    }
-
-    public function refereeLogin(string $code): ?Referee {
-        try {
-            $sql = "SELECT id, first_name, last_name FROM referees WHERE code = :code";
-            $statement = $this->pdo->prepare($sql);
-            $statement->bindValue(':code', $code, PDO::PARAM_STR);
-            $statement->execute();
-
-            $row = $statement->fetch(PDO::FETCH_ASSOC);
-
-            if ($row) {
-                return $this->hydrate($row); // Convert the row to a Referee object
+            error_log("User found: " . json_encode($row));
+            if (!password_verify($code, $row['code'])) {
+                error_log("Password verification failed for: $name");
+                return null;
             }
 
-            return null; // Return null if no row is found
+            return $this->hydrate($row);
         } catch (PDOException $e) {
-            error_log($e->getMessage());
-            return null;
+            error_log("Login error: " . $e->getMessage());
+            throw new RuntimeException("Login processing failed");
         }
     }
 
-    public function refereeExists(string $code): bool {
+    public function testConnection(): array {
         try {
-            $sql = "SELECT COUNT(*) FROM referees WHERE code = :code";
-            $statement = $this->pdo->prepare($sql);
-            $statement->bindValue(':code', $code, PDO::PARAM_STR);
-            $statement->execute();
-
-            return $statement->fetchColumn() > 0;
+            $stmt = $this->pdo->query("SELECT 1 as test_value");
+            $result = $stmt->fetch();
+            return ['success' => true, 'test_value' => $result['test_value']];
         } catch (PDOException $e) {
-            // Log error and return false
-            error_log($e->getMessage());
-            return false;
+            error_log("Test query failed: " . $e->getMessage());
+            throw new RuntimeException("Test query failed");
         }
     }
 
-    public function hydrate(array $refereeData): Referee {
+    private function hydrate(array $data): Referee {
         $referee = new Referee();
-
-        $referee->setId(Uuid::fromString($refereeData['id']));
-        $referee->setFirstName($refereeData['first_name']);
-        $referee->setLastName($refereeData['last_name']);
-
+        $referee->setId(Uuid::fromString($data['id']));
+        $referee->setFirstName($data['first_name']);
+        $referee->setLastName($data['last_name']);
         return $referee;
     }
 }
