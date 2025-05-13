@@ -13,7 +13,6 @@ class JwtHelper {
             throw new Exception('JWT secret key too short (min 32 chars)');
         }
         self::$secretKey = $secretKey;
-        error_log("JWT initialized with key: " . substr($secretKey, 0, 3) . "...");
     }
 
     public static function generateToken(array $payload): string {
@@ -30,7 +29,6 @@ class JwtHelper {
             'data' => $payload
         ];
 
-        error_log("Generating token for: " . json_encode($payload));
         return JWT::encode($token, self::$secretKey, 'HS256');
     }
 
@@ -41,8 +39,7 @@ class JwtHelper {
             }
 
             return JWT::decode($token, new Key(self::$secretKey, 'HS256'));
-        } catch (Exception $e) {
-            error_log("JWT decode error: " . $e->getMessage());
+        } catch (Exception) {
             return null;
         }
     }
