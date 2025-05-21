@@ -70,7 +70,7 @@ document.querySelector(".form").addEventListener("submit", async (event) => {
         const result = await login(inputCode, inputName);
 
         if (result.status === 200 && result.referee && result.token) {
-            let referee = new Referee(result.referee.id, result.referee.first_name, result.referee.last_name);
+            let referee = new Referee(result.referee.id, result.referee.firstName, result.referee.lastName);
             localStorage.setItem("referee", JSON.stringify(referee));
             localStorage.setItem("token", result.token);
             window.location.replace("dashboard");
