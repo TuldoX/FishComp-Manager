@@ -1,13 +1,16 @@
 <?php
-namespace App\Entity;
+namespace App\Service;
 
+use Exception;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
-use Exception;
 
-class JwtHelper {
+class AuthService {
     private static string $secretKey;
 
+    /**
+     * @throws Exception
+     */
     public static function initialize(string $secretKey): void {
         if (strlen($secretKey) < 32) {
             throw new Exception('JWT secret key too short (min 32 chars)');
@@ -15,6 +18,9 @@ class JwtHelper {
         self::$secretKey = $secretKey;
     }
 
+    /**
+     * @throws Exception
+     */
     public static function generateToken(array $payload): string {
         if (empty(self::$secretKey)) {
             throw new Exception('JWT secret key not initialized');
@@ -42,5 +48,20 @@ class JwtHelper {
         } catch (Exception) {
             return null;
         }
+    }
+
+    public static function isValidToken(string $authHeader): bool {
+        if (!preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            return false;
+        }
+
+        $token = $matches[1];
+
+        $decoded = AuthService::decodeToken($token);
+        if (!$decoded) {
+            return false;
+        }
+
+        return true;
     }
 }

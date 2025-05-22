@@ -1,10 +1,15 @@
 const prefix = "http://localhost:8081/api";
 
 const getCatches = async (competitorId) => {
-    const response = await fetch(prefix + `/competitors/${competitorId}/catches`);
+    const token = localStorage.getItem('token');
+
+    const response = await fetch(prefix + `/competitors/${competitorId}/catches`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
 
     if (response.status === 204) {
-        // No content to return
         return [];
     }
 
@@ -16,13 +21,24 @@ const getCatches = async (competitorId) => {
 };
 
 
+
 const deleteCatch = async (catchId) => {
-    const response = await fetch(prefix + `/catches/${catchId}`, { method: "DELETE" });
+    const token = localStorage.getItem('token');
+
+    const response = await fetch(prefix + `/catches/${catchId}`, {
+        method: "DELETE",
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
     if (response.status !== 200) {
         throw new Error(`Response status: ${response.status}`);
     }
+
     return await response.json();
 };
+
 
 function Render(species, points, id) {
     const row = document.createElement('tr');

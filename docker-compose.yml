@@ -51,6 +51,7 @@ services:
       - "80:80"
     volumes:
       - ./frontend:/var/www
+    env_file: .env.frontend
     networks:
       fishcomp-manager:
         ipv4_address: 172.21.0.2

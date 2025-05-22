@@ -73,6 +73,7 @@ document.querySelector(".form").addEventListener("submit", async (event) => {
             let referee = new Referee(result.referee.id, result.referee.firstName, result.referee.lastName);
             localStorage.setItem("referee", JSON.stringify(referee));
             localStorage.setItem("token", result.token);
+            document.cookie = `token=${result.token}; path=/; max-age=3600; SameSite=Lax`;
             window.location.replace("dashboard");
         } else {
             message.textContent = result.message;

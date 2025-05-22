@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 
+use App\Service\AuthService;
 use Exception;
 use Ramsey\Uuid\Uuid;
 use App\View\JsonView;
@@ -10,6 +11,21 @@ class CatchController{
     public function deleteCatch(string $catchId): void{
         $catchModel = new CatchModel();
         $view = new JsonView();
+
+        $headers = getallheaders();
+        $authHeader = $headers['Authorization'] ?? '';
+        $authService = new AuthService();
+
+        $jwtSecret = getenv('JWT_SECRET_KEY');
+        if (!$jwtSecret) {
+            throw new Exception('JWT secret key not configured');
+        }
+        AuthService::initialize($jwtSecret);
+
+        if(!$authService::isValidToken($authHeader)){
+            $view->render(['error' => 'Unauthorized'],401);
+            return;
+        }
 
         if (!Uuid::isValid($catchId)) {
             $view->render(['error' => 'Invalid UUID format.'], 400);

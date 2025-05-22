@@ -1,10 +1,10 @@
 <?php
 namespace App\Controller;
 
-use App\View\JsonView;
-use App\Service\AuthModel;
-use App\Entity\JwtHelper;
 use App\Entity\Referee;
+use App\Service\AuthModel;
+use App\Service\AuthService;
+use App\View\JsonView;
 use Exception;
 
 class AuthController {
@@ -22,7 +22,7 @@ class AuthController {
             if (!$jwtSecret) {
                 throw new Exception('JWT secret key not configured');
             }
-            JwtHelper::initialize($jwtSecret);
+            AuthService::initialize($jwtSecret);
 
             $input = json_decode(file_get_contents('php://input'), true);
             if (json_last_error() !== JSON_ERROR_NONE) {
@@ -46,7 +46,7 @@ class AuthController {
             $token = $this->generateAuthToken($referee);
             $this->sendSuccessResponse($token, $referee);
 
-        } catch (Exception $e) {
+        } catch (Exception) {
             $this->view->render(['message' => 'Authentication service unavailable'], 500);
         }
     }
@@ -65,8 +65,11 @@ class AuthController {
         return true;
     }
 
+    /**
+     * @throws Exception
+     */
     private function generateAuthToken(Referee $referee): string {
-        return JwtHelper::generateToken([
+        return AuthService::generateToken([
             'id' => $referee->getId()->toString(),
             'firstName' => $referee->getFirstName(),
             'lastName' => $referee->getLastName(),
