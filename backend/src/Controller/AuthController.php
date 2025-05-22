@@ -18,11 +18,11 @@ class AuthController {
 
     public function refereeLogin(): void {
         try {
-            $jwtSecret = getenv('JWT_SECRET_KEY');
-            if (!$jwtSecret) {
-                throw new Exception('JWT secret key not configured');
-            }
-            AuthService::initialize($jwtSecret);
+            // $jwtSecret = getenv('JWT_SECRET_KEY');
+            // if (!$jwtSecret) {
+            //     throw new Exception('JWT secret key not configured');
+            // }
+            // AuthService::initialize($jwtSecret);
 
             $input = json_decode(file_get_contents('php://input'), true);
             if (json_last_error() !== JSON_ERROR_NONE) {

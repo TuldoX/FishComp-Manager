@@ -10,6 +10,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
+// --- JWT secret initialization ---
+$jwtSecret = getenv('JWT_SECRET_KEY');
+if (!$jwtSecret) {
+    throw new Exception('JWT secret key not configured');
+}
+\App\Service\AuthService::initialize($jwtSecret);
+// --- end JWT secret initialization ---
+
 use App\Controller\SpeciesController;
 use App\Router\Router;
 use App\Controller\RefereeController;

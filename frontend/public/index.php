@@ -2,6 +2,14 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
+// --- JWT secret initialization ---
+$jwtSecret = getenv('JWT_SECRET_KEY');
+if (!$jwtSecret) {
+    throw new Exception('JWT secret key not configured');
+}
+\App\Service\AuthService::initialize($jwtSecret);
+// --- end JWT secret initialization ---
+
 use App\Controller\PrihlasenieController;
 use App\Router\Router;
 use App\Controller\HomePageController;

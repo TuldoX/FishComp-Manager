@@ -16,11 +16,11 @@ class CatchController{
         $authHeader = $headers['Authorization'] ?? '';
         $authService = new AuthService();
 
-        $jwtSecret = getenv('JWT_SECRET_KEY');
-        if (!$jwtSecret) {
-            throw new Exception('JWT secret key not configured');
-        }
-        AuthService::initialize($jwtSecret);
+        // $jwtSecret = getenv('JWT_SECRET_KEY');
+        // if (!$jwtSecret) {
+        //     throw new Exception('JWT secret key not configured');
+        // }
+        // AuthService::initialize($jwtSecret);
 
         if(!$authService::isValidToken($authHeader)){
             $view->render(['error' => 'Unauthorized'],401);
