@@ -2,34 +2,47 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
-// --- JWT secret initialization ---
-$jwtSecret = getenv('JWT_SECRET_KEY');
-if (!$jwtSecret) {
-    throw new Exception('JWT secret key not configured');
-}
-\App\Service\AuthService::initialize($jwtSecret);
-// --- end JWT secret initialization ---
-
 use App\Controller\PrihlasenieController;
-use App\Router\Router;
 use App\Controller\HomePageController;
 use App\Controller\CatchesController;
 use App\Controller\AddCatchController;
 use App\Controller\DashboardController;
+use App\Router\Router;
+use App\Service\AuthService;
+use App\Middleware\AuthMiddleware;
 
-//echo "Hello, world from L17!";
+// --- Initialize JWT secret ---
+$jwtSecret = getenv('JWT_SECRET_KEY');
+if (!$jwtSecret) {
+    throw new Exception('JWT secret key not configured');
+}
+AuthService::initialize($jwtSecret);
 
-// 1. vytvoríme inštanciu routra
+// --- Set up router ---
 $router = new Router();
 
-// 2. nakonfigurujeme routy
-// User management endpoints
+// Define public (unauthenticated) routes
+$publicRoutes = [
+    '/',
+    '/prihlasenie',
+];
 
-$router->get('/',HomePageController::class, 'index');
-$router->get('/prihlasenie',PrihlasenieController::class, 'index');
-$router->get('/ulovky',CatchesController::class, 'index');
-$router->get('/pridanie_ulovku',AddCatchController::class, 'index');
-$router->get('/dashboard',DashboardController::class, 'index');
+// Current URI path
+$uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
-// 3. zavoláme metódu dispatch na routri
+// Run middleware for protected routes
+if (!in_array($uri, $publicRoutes)) {
+    if (!AuthMiddleware::handle()) {
+        exit; // Redirects already handled by middleware
+    }
+}
+
+// Register routes
+$router->get('/', HomePageController::class, 'index');
+$router->get('/prihlasenie', PrihlasenieController::class, 'index');
+$router->get('/ulovky', CatchesController::class, 'index');
+$router->get('/pridanie_ulovku', AddCatchController::class, 'index');
+$router->get('/dashboard', DashboardController::class, 'index');
+
+// Dispatch request
 $router->dispatch();

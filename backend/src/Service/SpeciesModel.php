@@ -69,4 +69,22 @@ class SpeciesModel{
 
         return $species;
     }
+    public function getMaxLengthBySpeciesId(int $speciesId): ?int {
+        try {
+            $sql = "SELECT max_length FROM species WHERE id = :speciesId";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindValue(':speciesId', $speciesId, PDO::PARAM_INT);
+            $stmt->execute();
+
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($result && isset($result['max_length'])) {
+                return (int)$result['max_length'];
+            }
+            return null; // Species not found
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return null; // On error, treat as not found
+        }
+    }
+
 }
