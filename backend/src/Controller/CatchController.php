@@ -12,10 +12,13 @@ class CatchController{
         $catchModel = new CatchModel();
         $view = new JsonView();
 
+        $start = microtime(true);
+
         $headers = getallheaders();
         $authHeader = $headers['Authorization'] ?? '';
         $authService = new AuthService();
-
+        
+        $afterAuthService = microtime(true);
         // $jwtSecret = getenv('JWT_SECRET_KEY');
         // if (!$jwtSecret) {
         //     throw new Exception('JWT secret key not configured');
@@ -23,10 +26,12 @@ class CatchController{
         // AuthService::initialize($jwtSecret);
 
         if(!$authService::isValidToken($authHeader)){
+            error_log('AuthService::isValidToken took ' . (microtime(true) - $afterAuthService) . ' seconds');
             $view->render(['error' => 'Unauthorized'],401);
             return;
         }
 
+          $afterToken = microtime(true);
         if (!Uuid::isValid($catchId)) {
             $view->render(['error' => 'Invalid UUID format.'], 400);
             return;
@@ -36,7 +41,7 @@ class CatchController{
             $view->render(['error' => 'Catch not found.'], 404);
             return;
         }
-
+         error_log('Total time: ' . (microtime(true) - $start) . ' seconds');
         try{
             $catchModel->deleteCatch(Uuid::fromString($catchId));
             $view->render(['success' => 'Catch deleted successfully.']);
