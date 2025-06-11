@@ -136,7 +136,7 @@ document.querySelector('.button').addEventListener('click', (event) => {
         return;
     }
 
-    if (isNaN(cm) || cm <= 0 || cm > Number(maxLength)) {
+    if (isNaN(cm) || cm <= 0 || cm > Number(maxLength) || cm < 5) {
         alert('Zadajte platnú dĺžku!');
         button.disabled = false;
         return;

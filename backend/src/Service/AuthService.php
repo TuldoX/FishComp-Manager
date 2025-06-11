@@ -1,5 +1,5 @@
 <?php
-namespace App\ServiceFE;
+namespace App\Service;
 
 use Exception;
 use Firebase\JWT\JWT;
@@ -52,7 +52,7 @@ class AuthService {
 
         $token = $matches[1];
 
-        $decoded = AuthServiceFE::decodeToken($token);
+        $decoded = AuthService::decodeToken($token);
         if (!$decoded) {
             return false;
         }

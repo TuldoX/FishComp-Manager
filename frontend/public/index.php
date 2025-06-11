@@ -8,8 +8,8 @@ use App\Controller\CatchesController;
 use App\Controller\AddCatchController;
 use App\Controller\DashboardController;
 use App\RouterFE\RouterFE;
-use App\ServiceFE\AuthServiceFE;
-use App\MiddlewareFE\AuthMiddlewareFE;
+use App\Service\AuthServiceFE;
+use App\Middleware\AuthMiddlewareFE;
 
 // --- Initialize JWT secret ---
 $jwtSecret = getenv('JWT_SECRET_KEY');

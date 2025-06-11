@@ -3,7 +3,7 @@
 
 namespace App\Controller;
 use App\View\HtmlView;
-use App\ServiceFE\AuthServiceFE;
+use App\Service\AuthServiceFE;
 use Exception;
 
 class CatchesController

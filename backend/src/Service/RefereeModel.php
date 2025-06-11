@@ -1,6 +1,6 @@
 <?php
 
-namespace App\ServiceFE;
+namespace App\Service;
 
 use App\Entity\Competitor;
 use Ramsey\Uuid\Uuid;

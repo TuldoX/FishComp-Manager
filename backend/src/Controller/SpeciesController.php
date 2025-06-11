@@ -2,7 +2,7 @@
 namespace App\Controller;
 
 use App\View\JsonView;
-use App\ServiceFE\SpeciesModel;
+use App\Service\SpeciesModel;
 
 class SpeciesController{
     public function getSpecies() : void {

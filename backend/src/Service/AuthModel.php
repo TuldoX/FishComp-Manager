@@ -1,5 +1,5 @@
 <?php
-namespace App\ServiceFE;
+namespace App\Service;
 
 use App\Entity\Referee;
 use Ramsey\Uuid\Uuid;

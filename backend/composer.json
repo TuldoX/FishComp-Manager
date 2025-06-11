@@ -9,8 +9,7 @@
     "ramsey/uuid": "^4.7",
     "firebase/php-jwt": "^6.11",
     "ext-pdo": "*",
-    "ext-ctype": "*",
-    "ext-http": "*"
+    "ext-ctype": "*"
   },
   "autoload": {
     "psr-4": {

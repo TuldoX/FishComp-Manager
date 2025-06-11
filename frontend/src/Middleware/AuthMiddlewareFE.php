@@ -1,8 +1,8 @@
 <?php
 
-namespace App\MiddlewareFE;
+namespace App\Middleware;
 
-use App\ServiceFE\AuthServiceFE;
+use App\Service\AuthServiceFE;
 
 class AuthMiddlewareFE
 {

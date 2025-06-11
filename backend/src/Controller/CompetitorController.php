@@ -1,7 +1,7 @@
 <?php
 namespace App\Controller;
 
-use App\ServiceFE\CompetitorModel;
+use App\Service\CompetitorModel;
 use App\View\JsonView;
 use Ramsey\Uuid\Uuid;
 

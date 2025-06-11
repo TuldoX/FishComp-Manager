@@ -1,6 +1,6 @@
 <?php
 
-namespace App\ServiceFE;
+namespace App\Service;
 
 use Ramsey\Uuid\UuidInterface;
 use Ramsey\Uuid\Uuid;

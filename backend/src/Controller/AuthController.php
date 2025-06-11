@@ -2,8 +2,8 @@
 namespace App\Controller;
 
 use App\Entity\Referee;
-use App\ServiceFE\AuthModel;
-use App\ServiceFE\AuthServiceFE;
+use App\Service\AuthModel;
+use App\Service\AuthService;
 use App\View\JsonView;
 use Exception;
 
@@ -61,7 +61,7 @@ class AuthController {
     }
 
     private function generateAuthToken(Referee $referee): string {
-        return AuthServiceFE::generateToken([
+        return AuthService::generateToken([
             'id' => $referee->getId()->toString(),
             'firstName' => $referee->getFirstName(),
             'lastName' => $referee->getLastName(),

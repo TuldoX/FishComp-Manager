@@ -4,8 +4,8 @@ namespace App\Controller;
 use Exception;
 use Ramsey\Uuid\Uuid;
 use App\View\JsonView;
-use App\ServiceFE\CatchModel;
-use App\ServiceFE\SpeciesModel;
+use App\Service\CatchModel;
+use App\Service\SpeciesModel;
 
 class CatchController {
     public function deleteCatch(string $catchId): void {
@@ -73,6 +73,10 @@ class CatchController {
             $errors[] = 'Species must be a positive integer';
         }
 
+        //check for meaningless numbers
+        if($bodyData['length'] < 5) {
+            $errors[] = 'Length must be greater than 5';
+        }
         // Validate length against max length for species
         if (empty($errors)) {
             $maxLength = $speciesModel->getMaxLengthBySpeciesId($bodyData['species']);
@@ -81,6 +85,11 @@ class CatchController {
             } elseif ($bodyData['length'] > $maxLength) {
                 $errors[] = "Length exceeds the maximum allowed length of $maxLength cm for this species.";
             }
+        }
+
+        // Add this validation after checking if length is numeric
+        if (str_contains((string)$bodyData['length'], '.') && strlen(explode('.', (string)$bodyData['length'])[1]) > 1) {
+            $errors[] = 'Length must have at most one decimal digit.';
         }
 
         if (!empty($errors)) {

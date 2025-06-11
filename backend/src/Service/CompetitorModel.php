@@ -1,5 +1,5 @@
 <?php
-namespace App\ServiceFE;
+namespace App\Service;
 
 use App\Entity\CatchRecord;
 use Ramsey\Uuid\Uuid;
@@ -21,7 +21,7 @@ class CompetitorModel
     {
         try {
             $sql = "
-                SELECT c.id, s.name, c.length
+                SELECT c.id, s.name, c.length,c.species
                 FROM catches c
                 JOIN species s ON s.id = c.species
                 WHERE c.competitor = :competitorId
@@ -66,8 +66,8 @@ class CompetitorModel
         $catch = new CatchRecord();
 
         $catch->setId(Uuid::fromString($row['id']));
-        $catch->setSpecies($row['species']);
-        $catch->setPoints($row['points']);
+        $catch->setSpecies($row['name']);
+        $catch->setPoints($row['length']);
 
         return $catch;
     }
