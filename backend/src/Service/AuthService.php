@@ -7,10 +7,6 @@ use Firebase\JWT\Key;
 
 class AuthService {
     private static string $secretKey;
-
-    /**
-     * @throws Exception
-     */
     public static function initialize(string $secretKey): void {
         if (strlen($secretKey) < 32) {
             throw new Exception('JWT secret key too short (min 32 chars)');
@@ -18,16 +14,13 @@ class AuthService {
         self::$secretKey = $secretKey;
     }
 
-    /**
-     * @throws Exception
-     */
     public static function generateToken(array $payload): string {
         if (empty(self::$secretKey)) {
             throw new Exception('JWT secret key not initialized');
         }
 
         $issuedAt = time();
-        $expiration = $issuedAt + 3600; // 1 hour
+        $expiration = $issuedAt + 28800; // 8 hours
 
         $token = [
             'iat' => $issuedAt,

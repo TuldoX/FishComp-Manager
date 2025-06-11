@@ -58,7 +58,6 @@ foreach ($protectedRoutes as [$routeMethod, $routePattern]) {
 
 // Register routes
 $router->get('/api/referees/{refereeId:uuid}/competitors', RefereeController::class, 'getCompetitors');
-$router->post('/api/auth/referee', AuthController::class, 'refereeLogin');
 $router->get('/api/competitors/{competitorId:uuid}/catches', CompetitorController::class, 'getCatches');
 $router->delete('/api/catches/{catchId:uuid}', CatchController::class, 'deleteCatch');
 $router->get('/api/species', SpeciesController::class, 'getSpecies');

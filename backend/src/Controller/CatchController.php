@@ -1,7 +1,6 @@
 <?php
 namespace App\Controller;
 
-use App\Service\AuthService;
 use Exception;
 use Ramsey\Uuid\Uuid;
 use App\View\JsonView;
@@ -50,7 +49,7 @@ class CatchController {
 
         foreach ($requiredFields as $field) {
             if (!isset($bodyData[$field])) {
-                $errors[] = "Missing required field: {$field}";
+                $errors[] = "Missing required field: $field";
             }
         }
 
@@ -64,10 +63,6 @@ class CatchController {
             $errors[] = 'Invalid competitor UUID format';
         }
 
-        if (!Uuid::isValid($bodyData['referee'])) {
-            $errors[] = 'Invalid referee UUID format';
-        }
-
         // Validate length field
         if (!is_numeric($bodyData['length']) || $bodyData['length'] <= 0) {
             $errors[] = 'Length must be a positive number';
@@ -77,7 +72,7 @@ class CatchController {
         if (!is_int($bodyData['species']) && !ctype_digit($bodyData['species'])) {
             $errors[] = 'Species must be a positive integer';
         } else {
-            $bodyData['species'] = (int)$bodyData['species'];
+
             if ($bodyData['species'] <= 0) {
                 $errors[] = 'Species must be a positive integer';
             }
@@ -89,7 +84,7 @@ class CatchController {
             if ($maxLength === null) {
                 $errors[] = 'Species not found.';
             } elseif ($bodyData['length'] > $maxLength) {
-                $errors[] = "Length exceeds the maximum allowed length of {$maxLength} cm for this species.";
+                $errors[] = "Length exceeds the maximum allowed length of $maxLength cm for this species.";
             }
         }
 

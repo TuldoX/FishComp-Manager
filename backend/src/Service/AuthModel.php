@@ -6,30 +6,13 @@ use Ramsey\Uuid\Uuid;
 use PDO;
 use PDOException;
 use RuntimeException;
+use App\Database\Database;
 
 class AuthModel {
     private PDO $pdo;
 
     public function __construct() {
-        $this->connect();
-    }
-
-    private function connect(): void {
-        try {
-            $host = getenv('POSTGRES_HOST') ?: 'localhost';
-            $port = getenv('POSTGRES_PORT') ?: 5432;
-            $dbname = getenv('POSTGRES_DB') ?: 'postgres';
-            $user = getenv('POSTGRES_USER') ?: 'postgres';
-            $password = getenv('POSTGRES_PASSWORD') ?: '';
-
-            $dsn = "pgsql:host=$host;port=$port;dbname=$dbname";
-            $this->pdo = new PDO($dsn, $user, $password, [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-            ]);
-        } catch (PDOException $e) {
-            throw new RuntimeException("Database connection failed: " . $e->getMessage());
-        }
+        $this->pdo = Database::getConnection();
     }
 
     public function refereeLogin(string $code, string $name): ?Referee {
@@ -46,7 +29,8 @@ class AuthModel {
 
             return $this->hydrate($row);
         } catch (PDOException $e) {
-            throw new RuntimeException("Login processing failed");
+            error_log("Login error: " . $e->getMessage());
+            throw new RuntimeException("Login processing failed.");
         }
     }
 

@@ -27,7 +27,7 @@ class AuthService
     public static function generateToken(array $payload): string
     {
         $issuedAt = time();
-        $expiration = $issuedAt + 3600;
+        $expiration = $issuedAt + 28800; //8 hours
 
         $token = [
             'iat' => $issuedAt,
