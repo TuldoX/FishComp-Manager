@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Service;
+namespace App\ServiceFE;
 
 use Exception;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
-class AuthService
+class AuthServiceFE
 {
     private static string $secretKey;
 

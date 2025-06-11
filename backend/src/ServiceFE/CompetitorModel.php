@@ -1,12 +1,11 @@
 <?php
-namespace App\Service;
+namespace App\ServiceFE;
 
 use App\Entity\CatchRecord;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use PDO;
 use PDOException;
-use RuntimeException;
 use App\Database\Database;
 
 class CompetitorModel

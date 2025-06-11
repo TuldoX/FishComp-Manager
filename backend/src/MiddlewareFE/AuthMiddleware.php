@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Middleware;
+namespace App\MiddlewareFE;
 
-use App\Service\AuthService;
+use App\ServiceFE\AuthServiceFE;
 
 class AuthMiddleware
 {
@@ -11,7 +11,7 @@ class AuthMiddleware
         $headers = getallheaders();
         $authHeader = $headers['Authorization'] ?? '';
 
-        if (!AuthService::isValidToken($authHeader)) {
+        if (!AuthServiceFE::isValidToken($authHeader)) {
             http_response_code(401);
             echo json_encode(['message' => 'Unauthorized']);
             return false;

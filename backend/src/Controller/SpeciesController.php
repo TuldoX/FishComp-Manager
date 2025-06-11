@@ -1,9 +1,8 @@
 <?php
 namespace App\Controller;
 
-use App\Service\AuthService;
 use App\View\JsonView;
-use App\Service\SpeciesModel;
+use App\ServiceFE\SpeciesModel;
 
 class SpeciesController{
     public function getSpecies() : void {

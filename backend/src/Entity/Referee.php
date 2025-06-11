@@ -2,7 +2,6 @@
 namespace App\Entity;
 
 use Ramsey\Uuid\UuidInterface;
-use Ramsey\Uuid\Uuid;
 use JsonSerializable;
 
 class Referee implements JsonSerializable {

@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Middleware;
+namespace App\MiddlewareFE;
 
-use App\Service\AuthService;
+use App\ServiceFE\AuthServiceFE;
 
-class AuthMiddleware
+class AuthMiddlewareFE
 {
     public static function handle(): bool
     {
         $token = $_COOKIE['token'] ?? null;
 
-        if (!$token || !AuthService::isValidToken($token)) {
+        if (!$token || !AuthServiceFE::isValidToken($token)) {
             // Redirect unauthorized users to login page
             header("Location: /prihlasenie");
             return false;

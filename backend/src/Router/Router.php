@@ -130,7 +130,7 @@ class Router
     }
     public static function matchPattern(string $routePattern, string $uri): bool
     {
-        $pattern = preg_replace('#\{[^/]+:uuid\}#', '[a-f0-9\-]{36}', $routePattern);
+        $pattern = preg_replace('#\{[^/]+:uuid}#', '[a-f0-9\-]{36}', $routePattern);
         return preg_match('#^' . $pattern . '$#', $uri) === 1;
     }
 

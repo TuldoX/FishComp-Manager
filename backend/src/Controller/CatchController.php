@@ -4,8 +4,8 @@ namespace App\Controller;
 use Exception;
 use Ramsey\Uuid\Uuid;
 use App\View\JsonView;
-use App\Service\CatchModel;
-use App\Service\SpeciesModel;
+use App\ServiceFE\CatchModel;
+use App\ServiceFE\SpeciesModel;
 
 class CatchController {
     public function deleteCatch(string $catchId): void {
@@ -68,14 +68,9 @@ class CatchController {
             $errors[] = 'Length must be a positive number';
         }
 
-        // Validate species field
-        if (!is_int($bodyData['species']) && !ctype_digit($bodyData['species'])) {
+        //validate species field
+        if (!is_int($bodyData['species']) || $bodyData['species'] <= 0) {
             $errors[] = 'Species must be a positive integer';
-        } else {
-
-            if ($bodyData['species'] <= 0) {
-                $errors[] = 'Species must be a positive integer';
-            }
         }
 
         // Validate length against max length for species

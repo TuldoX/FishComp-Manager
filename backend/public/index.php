@@ -7,8 +7,8 @@ use App\Controller\RefereeController;
 use App\Controller\AuthController;
 use App\Controller\CompetitorController;
 use App\Controller\CatchController;
-use App\Service\AuthService;
-use App\Middleware\AuthMiddleware;
+use App\ServiceFE\AuthServiceFE;
+use App\MiddlewareFE\AuthMiddlewareFE;
 
 // CORS headers
 header("Access-Control-Allow-Origin: http://localhost");
@@ -25,7 +25,7 @@ $jwtSecret = getenv('JWT_SECRET_KEY');
 if (!$jwtSecret) {
     throw new Exception('JWT secret key not configured');
 }
-AuthService::initialize($jwtSecret);
+AuthServiceFE::initialize($jwtSecret);
 // --- end JWT secret initialization ---
 
 // Instantiate router
@@ -49,7 +49,7 @@ $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
 foreach ($protectedRoutes as [$routeMethod, $routePattern]) {
     if ($method === $routeMethod && Router::matchPattern($routePattern, $uri)) {
-        if (!AuthMiddleware::handle()) {
+        if (!AuthMiddlewareFE::handle()) {
             exit; // stop execution if not authorized
         }
         break;

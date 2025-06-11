@@ -1,14 +1,10 @@
 <?php
 
-namespace App\Router;
+namespace App\RouterFE;
 
 use http\Exception\InvalidArgumentException;
-use Ramsey\Uuid\Uuid;
 
-/**
- *
- */
-class Router
+class RouterFE
 {
     /**
      * @var array

@@ -1,5 +1,5 @@
 <?php
-namespace App\Service;
+namespace App\ServiceFE;
 
 use App\Entity\Species;
 use PDOException;

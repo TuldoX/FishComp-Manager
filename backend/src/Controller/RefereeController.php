@@ -2,8 +2,7 @@
 
 namespace App\Controller;
 
-use App\Service\AuthService;
-use App\Service\RefereeModel;
+use App\ServiceFE\RefereeModel;
 use App\View\JsonView;
 use Ramsey\Uuid\Uuid;
 

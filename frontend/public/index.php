@@ -7,19 +7,19 @@ use App\Controller\HomePageController;
 use App\Controller\CatchesController;
 use App\Controller\AddCatchController;
 use App\Controller\DashboardController;
-use App\Router\Router;
-use App\Service\AuthService;
-use App\Middleware\AuthMiddleware;
+use App\RouterFE\RouterFE;
+use App\ServiceFE\AuthServiceFE;
+use App\MiddlewareFE\AuthMiddlewareFE;
 
 // --- Initialize JWT secret ---
 $jwtSecret = getenv('JWT_SECRET_KEY');
 if (!$jwtSecret) {
     throw new Exception('JWT secret key not configured');
 }
-AuthService::initialize($jwtSecret);
+AuthServiceFE::initialize($jwtSecret);
 
 // --- Set up router ---
-$router = new Router();
+$router = new RouterFE();
 
 // Define public (unauthenticated) routes
 $publicRoutes = [
@@ -32,7 +32,7 @@ $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
 // Run middleware for protected routes
 if (!in_array($uri, $publicRoutes)) {
-    if (!AuthMiddleware::handle()) {
+    if (!AuthMiddlewareFE::handle()) {
         exit; // Redirects already handled by middleware
     }
 }

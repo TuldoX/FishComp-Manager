@@ -1,10 +1,9 @@
 <?php
 namespace App\Controller;
 
-use App\Service\CompetitorModel;
+use App\ServiceFE\CompetitorModel;
 use App\View\JsonView;
 use Ramsey\Uuid\Uuid;
-use App\Service\AuthService;
 
 class CompetitorController{
     public function getCatches(string $competitorId): void{

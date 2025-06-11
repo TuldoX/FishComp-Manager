@@ -88,16 +88,6 @@ window.addEventListener('load', () => {
     getCatches(competitorId)
         .then(data => {
             if (data.length === 0) {
-                /* Optional: show a message like "Žiadne úlovky"
-                const table = document.querySelector('tbody');
-                const row = document.createElement('tr');
-                const cell = document.createElement('td');
-                cell.textContent = 'Žiadne úlovky.';
-                cell.colSpan = 3; // assuming 3 columns
-                cell.style.textAlign = 'center';
-                row.appendChild(cell);
-                table.appendChild(row);
-                */
                 return;
             }
 
