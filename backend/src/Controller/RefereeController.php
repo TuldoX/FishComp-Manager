@@ -29,7 +29,7 @@ class RefereeController {
 
         // Handle empty results
         if (empty($data)) {
-            $view->render(['message' => 'No competitors found for this referee.'], 204);
+            $view->render(['error' => 'No competitors found for this referee.'], 204);
             return;
         }
 

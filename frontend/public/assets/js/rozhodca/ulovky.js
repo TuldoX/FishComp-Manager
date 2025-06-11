@@ -1,10 +1,15 @@
 const prefix = "http://localhost:8081/api";
 
 const getCatches = async (competitorId) => {
-    const response = await fetch(prefix + `/competitors/${competitorId}/catches`);
+    const token = localStorage.getItem('token');
+
+    const response = await fetch(prefix + `/competitors/${competitorId}/catches`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
 
     if (response.status === 204) {
-        // No content to return
         return [];
     }
 
@@ -16,13 +21,24 @@ const getCatches = async (competitorId) => {
 };
 
 
+
 const deleteCatch = async (catchId) => {
-    const response = await fetch(prefix + `/catches/${catchId}`, { method: "DELETE" });
+    const token = localStorage.getItem('token');
+
+    const response = await fetch(prefix + `/catches/${catchId}`, {
+        method: "DELETE",
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
     if (response.status !== 200) {
         throw new Error(`Response status: ${response.status}`);
     }
+
     return await response.json();
 };
+
 
 function Render(species, points, id) {
     const row = document.createElement('tr');
@@ -72,16 +88,6 @@ window.addEventListener('load', () => {
     getCatches(competitorId)
         .then(data => {
             if (data.length === 0) {
-                /* Optional: show a message like "Žiadne úlovky"
-                const table = document.querySelector('tbody');
-                const row = document.createElement('tr');
-                const cell = document.createElement('td');
-                cell.textContent = 'Žiadne úlovky.';
-                cell.colSpan = 3; // assuming 3 columns
-                cell.style.textAlign = 'center';
-                row.appendChild(cell);
-                table.appendChild(row);
-                */
                 return;
             }
 

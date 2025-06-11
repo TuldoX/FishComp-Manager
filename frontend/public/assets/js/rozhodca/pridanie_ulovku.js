@@ -19,22 +19,33 @@ class Species {
 
 const getSpeciesList = async () => {
     try {
-        const response = await fetch(prefix + `/species`);
+        const token = localStorage.getItem('token');
+
+        const response = await fetch(prefix + `/species`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
         if (!response.ok) {
             throw new Error(`HTTP error: ${response.status}`);
         }
+
         return await response.json();
     } catch (err) {
         console.error("Fetch failed:", err);
         throw err;
     }
-}
+};
+
 
 const postCatch = async (ulovok) => {
+    const token = localStorage.getItem("token");
     const response = await fetch(prefix + '/catches', {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify({
             "competitor": ulovok.competitor,
@@ -125,7 +136,7 @@ document.querySelector('.button').addEventListener('click', (event) => {
         return;
     }
 
-    if (isNaN(cm) || cm <= 0 || cm > Number(maxLength)) {
+    if (isNaN(cm) || cm <= 0 || cm > Number(maxLength) || cm < 5) {
         alert('Zadajte platnú dĺžku!');
         button.disabled = false;
         return;

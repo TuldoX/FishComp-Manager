@@ -1,49 +1,82 @@
 <?php
 namespace App\Controller;
 
-use App\View\JsonView;
+use App\Entity\Referee;
 use App\Service\AuthModel;
+use App\Service\AuthService;
+use App\View\JsonView;
+use Exception;
 
-class AuthController{
+class AuthController {
+    private JsonView $view;
+    private AuthModel $authModel;
+
+    public function __construct() {
+        $this->view = new JsonView();
+        $this->authModel = new AuthModel();
+    }
+
     public function refereeLogin(): void {
-        $authModel = new AuthModel();
-        $view = new JsonView();
+        try {
 
-        // Retrieve the raw input from the request body
-        $input = json_decode(file_get_contents('php://input'), true);
+            $input = json_decode(file_get_contents('php://input'), true);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                throw new Exception('Invalid JSON input');
+            }
 
-        // Check if the JSON is valid
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            $view->render(['error' => 'Invalid JSON in request body.'], 400);
-            return;
-        }
+            $code = $input['code'] ?? '';
+            $name = $input['name'] ?? '';
 
-        // Validate the presence of the "code" parameter
-        $code = $input['code'] ?? null;
-        $code = trim($code);
-        if (!$code || !preg_match('/^[a-zA-Z0-9]+$/', $code)) {
-            $view->render(['error' => 'Invalid or missing code.'], 400);
-            return;
-        }
-
-        if (!$authModel->refereeExists($code)) {
-            $view->render(['error' => 'Referee not found.'], 404);
-            return;
-        }
-
-        try{
-            $data = $authModel->refereeLogin($code);
-
-            // Handle empty results
-            if ($data === null) {
-                $view->render(['message' => 'No referee found.'], 204);
+            if (!$this->validateCredentials($code, $name)) {
                 return;
             }
 
-            $view->render($data);
-        } catch (\Exception $e) {
-            error_log($e->getMessage());
-            $view->render(['error' => 'An unexpected error occurred.'], 500);
+            $referee = $this->authModel->refereeLogin($code, $name);
+
+            if (!$referee) {
+                $this->view->render(['message' => 'Neplatné údaje'], 401);
+                return;
+            }
+
+            $token = $this->generateAuthToken($referee);
+            $this->sendSuccessResponse($token, $referee);
+
+        } catch (Exception) {
+            $this->view->render(['message' => 'Authentication service unavailable'], 500);
         }
+    }
+
+    private function validateCredentials(string $code, string $name): bool {
+        if (empty($code) || !preg_match('/^[a-zA-Z0-9]+$/', $code)) {
+            $this->view->render(['message' => 'Neplatný kód'], 400);
+            return false;
+        }
+
+        if (empty($name) || !preg_match('/^[a-z]+\.[a-z]+$/', $name)) {
+            $this->view->render(['message' => 'Neplatný formát mena'], 400);
+            return false;
+        }
+
+        return true;
+    }
+
+    private function generateAuthToken(Referee $referee): string {
+        return AuthService::generateToken([
+            'id' => $referee->getId()->toString(),
+            'firstName' => $referee->getFirstName(),
+            'lastName' => $referee->getLastName(),
+            'role' => 'referee'
+        ]);
+    }
+
+    private function sendSuccessResponse(string $token, Referee $referee): void {
+        $this->view->render([
+            'token' => $token,
+            'referee' => [
+                'id' => $referee->getId()->toString(),
+                'firstName' => $referee->getFirstName(),
+                'lastName' => $referee->getLastName()
+            ]
+        ]);
     }
 }

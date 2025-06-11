@@ -6,62 +6,33 @@ use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use PDO;
 use PDOException;
-use RuntimeException;
+use App\Database\Database;
 
 class CompetitorModel
 {
     private PDO $pdo;
 
-    // Database connection when creating RefereeModel object
     public function __construct()
     {
-        try {
-            $host = getenv('POSTGRES_HOST') ?: 'default_database';
-            $port = getenv('POSTGRES_PORT') ?: 5432;
-            $dbname = getenv('POSTGRES_DB') ?: 'postgres';
-            $user = getenv('POSTGRES_USER') ?: 'default_user';
-            $password = getenv('POSTGRES_PASSWORD') ?: 'default_password';
-
-            if ($host === 'default_database' || $user === 'default_user') {
-                throw new RuntimeException('Critical database configuration is missing. Please set the required environment variables.');
-            }
-
-            $dsn = sprintf('pgsql:host=%s;port=%s;dbname=%s', $host, $port, $dbname);
-
-            $options = [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                PDO::ATTR_EMULATE_PREPARES => false,
-            ];
-
-            $this->pdo = new PDO($dsn, $user, $password, $options);
-        } catch (PDOException $e) {
-            // Log the error and rethrow it
-            error_log('Database connection failed: ' . $e->getMessage());
-            throw new RuntimeException('Failed to connect to the database.');
-        }
+        $this->pdo = Database::getConnection();
     }
 
     public function getCatches(UuidInterface $competitorId): array
     {
         try {
-            $sql = "SELECT 
-                    c.id,
-                    (
-                        SELECT name 
-                        FROM species
-                        WHERE species.id = c.species
-                    ) AS species,
-                    c.length as points
+            $sql = "
+                SELECT c.id, s.name, c.length,c.species
                 FROM catches c
+                JOIN species s ON s.id = c.species
                 WHERE c.competitor = :competitorId
-                ORDER BY points DESC
-                ";
+                ORDER BY c.length DESC;
+            ";
+
             $statement = $this->pdo->prepare($sql);
             $statement->bindValue(':competitorId', $competitorId->toString());
             $statement->execute();
 
-            $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
+            $rows = $statement->fetchAll();
 
             $catches = [];
             foreach ($rows as $row) {
@@ -70,13 +41,13 @@ class CompetitorModel
 
             return $catches;
         } catch (PDOException $e) {
-            // Log error and return an empty array
-            error_log($e->getMessage());
+            error_log('Error fetching catches: ' . $e->getMessage());
             return [];
         }
     }
 
-    public function competitorExists(UuidInterface $competitorId): bool {
+    public function competitorExists(UuidInterface $competitorId): bool
+    {
         try {
             $sql = "SELECT COUNT(*) FROM competitors WHERE id = :competitorId";
             $statement = $this->pdo->prepare($sql);
@@ -85,18 +56,18 @@ class CompetitorModel
 
             return $statement->fetchColumn() > 0;
         } catch (PDOException $e) {
-            // Log error and return false
-            error_log($e->getMessage());
+            error_log('Error checking competitor existence: ' . $e->getMessage());
             return false;
         }
     }
 
-    private function hydrateCatch(array $row): CatchRecord{
-        $catch  = new CatchRecord();
+    private function hydrateCatch(array $row): CatchRecord
+    {
+        $catch = new CatchRecord();
 
         $catch->setId(Uuid::fromString($row['id']));
-        $catch->setSpecies($row['species']);
-        $catch->setPoints($row['points']);
+        $catch->setSpecies($row['name']);
+        $catch->setPoints($row['length']);
 
         return $catch;
     }

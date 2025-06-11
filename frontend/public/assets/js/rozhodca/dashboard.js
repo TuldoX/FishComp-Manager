@@ -12,16 +12,26 @@ class Competitor {
 
 const getCompetitors = async (refereeId) => {
     try {
-        const response = await fetch(prefix + `/referees/${refereeId}/competitors`);
+        const token = localStorage.getItem('token');
+        const response = await fetch(prefix + `/referees/${refereeId}/competitors`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
         if (!response.ok) {
             throw new Error(`HTTP error: ${response.status}`);
         }
+
         return await response.json();
     } catch (err) {
         console.error("Fetch failed:", err);
         throw err;
     }
 };
+
 
 function setCompetitorSession(id, fullName) {
     sessionStorage.setItem("id", JSON.stringify(id));
