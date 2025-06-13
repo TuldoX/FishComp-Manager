@@ -36,10 +36,7 @@ class AuthService {
             if (empty(self::$secretKey)) {
                 throw new Exception('JWT secret key not initialized');
             }
-            $start = microtime(true);
-            $result = JWT::decode($token, new Key(self::$secretKey, 'HS256'));
-            error_log('JWT::decode took ' . (microtime(true) - $start) . ' seconds');
-        return $result;
+            return JWT::decode($token, new Key(self::$secretKey, 'HS256'));
         } catch (Exception) {
             return null;
         }

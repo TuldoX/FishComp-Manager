@@ -40,6 +40,7 @@ const getSpeciesList = async () => {
 
 
 const postCatch = async (ulovok) => {
+    try {
     const token = localStorage.getItem("token");
     const response = await fetch(prefix + '/catches', {
         method: "POST",
@@ -53,8 +54,7 @@ const postCatch = async (ulovok) => {
             "species": ulovok.species,
             "length": ulovok.length
         })
-    });
-
+    })
     if (response.status === 201) {
         const contentType = response.headers.get("content-type");
         if (contentType && contentType.includes("application/json")) {
@@ -69,6 +69,10 @@ const postCatch = async (ulovok) => {
         } catch (_) {
         }
         throw new Error(errorMsg);
+    }
+    }  catch (err) {
+        console.error("Fetch failed:", err);
+        throw err;
     }
 };
 

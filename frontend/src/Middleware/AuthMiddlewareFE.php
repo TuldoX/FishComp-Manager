@@ -10,12 +10,7 @@ class AuthMiddlewareFE
     {
         $token = $_COOKIE['token'] ?? null;
 
-        if (!$token || !AuthServiceFE::isValidToken($token)) {
-            // Redirect unauthorized users to login page
-            header("Location: /prihlasenie");
-            return false;
-        }
-
+        if (!$token || !AuthServiceFE::isValidToken($token)) return false;
         return true;
     }
 }

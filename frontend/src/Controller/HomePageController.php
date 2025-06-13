@@ -1,8 +1,7 @@
 <?php
 
 namespace App\Controller;
-
-use App\View\HtmlView; // Fix the namespace import
+use App\View\HtmlView;
 
 class HomePageController
 {

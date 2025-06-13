@@ -10,18 +10,18 @@ use App\Controller\DashboardController;
 use App\RouterFE\RouterFE;
 use App\Service\AuthServiceFE;
 use App\Middleware\AuthMiddlewareFE;
+use App\View\HtmlView;
 
-// --- Initialize JWT secret ---
+$htmlView = new HtmlView();
+
 $jwtSecret = getenv('JWT_SECRET_KEY');
-if (!$jwtSecret) {
-    throw new Exception('JWT secret key not configured');
-}
+
+if (!$jwtSecret) throw new Exception('JWT secret key not configured');
+
 AuthServiceFE::initialize($jwtSecret);
 
-// --- Set up router ---
 $router = new RouterFE();
 
-// Define public (unauthenticated) routes
 $publicRoutes = [
     '/',
     '/prihlasenie',
@@ -33,7 +33,8 @@ $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 // Run middleware for protected routes
 if (!in_array($uri, $publicRoutes)) {
     if (!AuthMiddlewareFE::handle()) {
-        exit; // Redirects already handled by middleware
+        $htmlView->render('prihlasenie');
+        exit;
     }
 }
 
@@ -44,5 +45,4 @@ $router->get('/ulovky', CatchesController::class, 'index');
 $router->get('/pridanie_ulovku', AddCatchController::class, 'index');
 $router->get('/dashboard', DashboardController::class, 'index');
 
-// Dispatch request
 $router->dispatch();

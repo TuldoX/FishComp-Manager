@@ -1,6 +1,8 @@
 const prefix = "http://localhost:8081/api";
 
+//try catch
 const getCatches = async (competitorId) => {
+    try {
     const token = localStorage.getItem('token');
 
     const response = await fetch(prefix + `/competitors/${competitorId}/catches`, {
@@ -18,26 +20,33 @@ const getCatches = async (competitorId) => {
     }
 
     return await response.json();
-};
+}  catch (err) {
+    console.error("Fetch failed:", err);
+    throw err;
+}};
 
 
 
 const deleteCatch = async (catchId) => {
-    const token = localStorage.getItem('token');
+    try {
+        const token = localStorage.getItem('token');
 
-    const response = await fetch(prefix + `/catches/${catchId}`, {
-        method: "DELETE",
-        headers: {
-            'Authorization': `Bearer ${token}`
+        const response = await fetch(prefix + `/catches/${catchId}`, {
+            method: "DELETE",
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (response.status !== 200) {
+            throw new Error(`Response status: ${response.status}`);
         }
-    });
 
-    if (response.status !== 200) {
-        throw new Error(`Response status: ${response.status}`);
-    }
-
-    return await response.json();
-};
+        return await response.json();
+     }  catch (err) {
+    console.error("Fetch failed:", err);
+    throw err;
+}};
 
 
 function Render(species, points, id) {
